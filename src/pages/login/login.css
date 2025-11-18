@@ -1,0 +1,130 @@
+body {
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+
+.container {
+  display: flex;
+  padding: 40px;
+  box-sizing: border-box;
+}
+
+/* LEFT SECTION */
+.left {
+  width: 50%;
+  display: flex;
+  justify-content: center; /* horizontal */
+  align-items: center;     /* vertical */
+  padding-right: 100px;
+}
+
+.logo {
+  width: 160px;
+}
+
+.title {
+  font-size: 48px;
+  font-weight: 700;
+  color: #454B60;
+  margin: 0;
+}
+
+.subtitle {
+  font-size: 14px;
+  color: #454B60;
+  font-weight: bold;
+  margin-top: 8px;
+  line-height: 1.4;
+}
+
+/* RIGHT SECTION */
+.right {
+  width: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.login-box {
+  width: 380px;
+  padding: 40px;
+  border: 2px solid #1c2b49;
+  border-radius: 20px;
+  text-align: center;
+}
+
+.login-box h2 {
+  margin: 0;
+  color: #454B60;
+}
+
+.login-desc {
+  font-size: 13px;
+  margin: 8px 0 20px;
+  font-weight: bold;
+  color: #454B60;
+}
+
+/* INPUTS */
+.input {
+  width: 100%;
+  height: 38px;
+  padding: 8px;
+  margin-top: 10px;
+  border: 1px solid #bfc6d3;
+  border-radius: 5px;
+  color: #454B60;
+  background-color: #fff;
+  font-size: 14px;
+}
+
+
+/* FORGOT */
+.forgot {
+  display: block;
+  margin-top: 5px;
+  text-align: right;
+  font-size: 12px;
+  color: #454B60;
+  text-decoration: none;
+}
+
+/* ROLES BUTTONS */
+.roles {
+  display: flex;
+  justify-content: center;
+  margin: 15px 0;
+}
+
+.role-btn {
+  width: 32%;
+  padding: 6px 0;
+  border: none;
+  border-radius: 5px;
+  background: #16294c;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+/* ENTER BUTTON */
+.enter-btn {
+  width: 100%;
+  border: none;
+  height: 35px;
+  background: #454B60;
+  color: white;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.signup {
+  font-size: 12px;
+  margin-top: 12px;
+  color: #454B60;
+}
