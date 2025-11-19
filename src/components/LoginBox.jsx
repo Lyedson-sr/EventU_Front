@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 
 function LoginBox() {
   return (
@@ -11,9 +12,9 @@ function LoginBox() {
       <input className="input" type="email" placeholder="Email" />
       <input className="input" type="password" placeholder="Senha" />
 
-      <a href="/forgot-password" className="forgot">
+      <Link to="/forgot-password" className="forgot">
         Esqueceu sua senha?
-      </a>
+      </Link>
 
       <div className="roles">
         <button className="role-btn">Aluno</button>
@@ -23,9 +24,12 @@ function LoginBox() {
 
       <button className="enter-btn">Entrar</button>
 
-      <p className="signup">
-        Não tem uma conta? <a href="/register">Cadastre-se</a>
-      </p>
+  <p className="signup">
+      Não tem uma conta?{" "}
+        <Link to="/register">
+          Cadastre-se
+        </Link>
+</p>
     </div>
   );
 }

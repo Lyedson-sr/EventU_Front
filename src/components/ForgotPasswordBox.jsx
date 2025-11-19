@@ -1,4 +1,4 @@
-import React from "react";
+import { Link } from "react-router-dom";
 
 function ForgotPassword() {
   return (
@@ -13,14 +13,12 @@ function ForgotPassword() {
         
         <div className="buttons">
           <div className="pair-buttons">
-            <a href="/login">
-              <button className="cancelar" >Cancelar</button>
-            </a>
+            <Link to="/login">
+              <button className="cancelar">Cancelar</button>
+            </Link>
             <button className="reset">Enviar</button>
           </div>
         </div>
-        
-        
 
     </div>
   );
