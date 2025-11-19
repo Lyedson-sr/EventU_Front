@@ -82,3 +82,9 @@ button:focus-visible {
     color: #747bff;
   }
 }
+
+.proximo{
+  background-color: #fff;
+  border: 1px solid #454B60;
+  color: #454B60;
+}

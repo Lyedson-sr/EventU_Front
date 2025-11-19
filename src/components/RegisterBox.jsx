@@ -1,4 +1,4 @@
-import React from "react";
+import { Link } from "react-router-dom";
 
 function RegisterBox() {
   return (
@@ -20,9 +20,23 @@ function RegisterBox() {
 
       <button className="register-btn">Cadastrar</button>
 
-      <p className="login-link">
-        Já possui uma conta? <a href="/login">Entrar</a>
+     <p className="login-link">
+        Já possui uma conta?{" "}
+        <Link to="/login">
+          Entrar
+        </Link>
       </p>
+
+    <dir className="buttons">
+      <div className="pair-buttons">
+        <Link to="/login">
+          <button type="button" className="cancelar">Cancelar</button>
+        </Link>
+        <Link>
+          <button type="button" className="proximo">Proximo</button>
+        </Link>
+        </div>
+       </dir>
     </div>
   );
 }
