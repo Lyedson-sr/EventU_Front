@@ -9,15 +9,15 @@ function ForgotPassword() {
             Redefinir sua senha usando seu email cadastrado
         </p>
 
-        <input className="input" type="email" placeholder="Email" />
+        <input className="input-forgot-password" type="email" placeholder="Email" />
         
-        <div className="buttons">
-          <div className="pair-buttons">
-            <Link to="/login">
-              <button className="cancelar">Cancelar</button>
-            </Link>
-            <button className="reset">Enviar</button>
-          </div>
+        <div className="pair-buttons">
+          <Link to="/login">
+            <button type="button" className="cancelar">Cancelar</button>
+          </Link>
+          <Link>
+            <button type="button" className="proximo" >Proximo</button>
+          </Link>
         </div>
 
     </div>
