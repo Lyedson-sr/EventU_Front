@@ -9,17 +9,22 @@ function LoginBox() {
         Digite seu nome de usuário e senha<br />para fazer login
       </p>
 
-      <input className="input" type="email" placeholder="Email" />
-      <input className="input" type="password" placeholder="Senha" />
+      <input className="input-login" type="email" placeholder="Email" />
+      <input className="input-login" type="password" placeholder="Senha" />
 
       <Link to="/forgot-password" className="forgot">
         Esqueceu sua senha?
       </Link>
 
       <div className="roles">
-        <button className="role-btn">Aluno</button>
-        <button className="role-btn">Professor</button>
-        <button className="role-btn">Administrador</button>
+        <input className="radio" type="radio" name="tipoUsuario" value="aluno" id="aluno"/>
+        <label htmlFor="aluno" className="type-user">Aluno</label>
+
+        <input className="radio" type="radio" name="tipoUsuario" value="professor" id="professor"/>
+        <label htmlFor="professor" className="type-user">Professor</label>
+
+        <input className="radio" type="radio" name="tipoUsuario" value="admin" id="admin" />
+        <label htmlFor="admin" className="type-user">Admin</label>
       </div>
 
       <button className="enter-btn">Entrar</button>
