@@ -19,12 +19,10 @@ function RegisterBox() {
 
   // FUNÇÕES para alternar a visibilidade
   const togglePasswordVisibility = () => {
-    console.log("Toggling password visibility");
     setShowPassword(prev => !prev);
   };
 
   const toggleConfirmPasswordVisibility = () => {
-    console.log("Toggling password visibility2");
     setShowConfirmPassword(prev => !prev);
   };
 
