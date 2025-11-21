@@ -15,7 +15,7 @@ function ForgotPassword() {
           <Link to="/login">
             <button type="button" className="cancelar">Cancelar</button>
           </Link>
-          <Link>
+          <Link to="/reset-password">
             <button type="button" className="proximo" >Proximo</button>
           </Link>
         </div>

@@ -1,7 +1,7 @@
 import React from "react";
 import LogoSection from "../../components/LogoSection";
 import RegisterBox from "../../components/RegisterBox";
-import './register.css';
+import '../login/Register.css';
 
 function Register() {
   return (
