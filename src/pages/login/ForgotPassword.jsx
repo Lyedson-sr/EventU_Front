@@ -6,10 +6,10 @@ import './forgot-password.css';
 function ForgotPassword() {
   return (
     <>
-        <div className="container">
-          <LogoSection />
-          <ForgotPasswordBox />
-        </div>
+      <div className="forgot-password-container">
+        <LogoSection />
+        <ForgotPasswordBox />
+      </div>
     </>
   );
 }

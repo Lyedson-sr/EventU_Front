@@ -4,7 +4,7 @@ import LogoSection from "../../components/LogoSection";
 
 function Login() {
   return (
-    <div className="container">
+    <div className="login-container">
       <LogoSection />
       <LoginBox />
     </div>

@@ -27,14 +27,17 @@ function LoginBox() {
         <label htmlFor="admin" className="type-user">Admin</label>
       </div>
 
-      <button className="enter-btn">Entrar</button>
+      <Link to="/email-verification">
+        <button className="enter-btn">Entrar</button>
+      </Link>
+      
 
-  <p className="signup">
-      Não tem uma conta?{" "}
-        <Link to="/register">
-          Cadastre-se
-        </Link>
-</p>
+    <p className="signup">
+        Não tem uma conta?{" "}
+          <Link to="/register">
+            Cadastre-se
+          </Link>
+  </p>
     </div>
   );
 }

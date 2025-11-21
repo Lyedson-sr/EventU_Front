@@ -1,15 +1,15 @@
 import React from "react";
 import LogoSection from "../../components/LogoSection";
 import ResetPasswordBox from "../../components/ResetPasswordBox";
-import './resetpassword.css';
+import './reset-password.css';
 
 function ResetPassword(){
-    return(
-        <div>
+  return(
+    <div className="reset-password-container">
       <LogoSection />
       <ResetPasswordBox/>
-      </div>
-        );
+    </div>
+  );
 }
 
 export default ResetPassword;

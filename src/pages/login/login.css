@@ -6,8 +6,7 @@ body {
   height: 100vh;
 }
 
-
-.container {
+.login-container {
   display: flex;
   padding: 40px;
   box-sizing: border-box;

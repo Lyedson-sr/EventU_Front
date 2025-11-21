@@ -7,6 +7,7 @@ import Login from './pages/login/Login.jsx';
 import Register from './pages/login/Register.jsx';
 import ForgotPassword from './pages/login/ForgotPassword.jsx';
 import ResetPassword from './pages/login/ResetPassword.jsx';
+import EmailVeridication from './pages/login/EmailVerification.jsx';
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -17,6 +18,7 @@ createRoot(document.getElementById('root')).render(
         <Route path="/register" element={<Register />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<ResetPassword/>} />
+        <Route path="/email-verification" element={<EmailVeridication/>} />
       </Routes>
     </BrowserRouter>
   </StrictMode>
