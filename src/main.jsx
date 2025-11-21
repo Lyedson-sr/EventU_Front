@@ -6,6 +6,7 @@ import './index.css'
 import Login from './pages/login/Login.jsx';
 import Register from './pages/login/Register.jsx';
 import ForgotPassword from './pages/login/ForgotPassword.jsx';
+import ResetPassword from './pages/login/ResetPassword.jsx';
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -15,6 +16,7 @@ createRoot(document.getElementById('root')).render(
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password" element={<ResetPassword/>} />
       </Routes>
     </BrowserRouter>
   </StrictMode>
