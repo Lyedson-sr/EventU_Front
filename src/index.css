@@ -56,21 +56,32 @@ button:focus-visible {
 .pair-buttons{
   width: 100%;
   display: flex;
-  justify-content: space-evenly; /* horizontal */
+  justify-content: space-between; /* horizontal */
   align-items: center;     /* vertical */
 }
 
-.buttons{
-    display: flex;
-    justify-content: space-around;
-    gap: 10px;
-    margin-top: 20px;
+.pair-buttons a{
+  width: 45%;
+  display: flex;
+}
+
+.pair-buttons button{
+  width: auto;
+  flex: 1;  
+  padding: 0;
+  height: 35px;
+}
+
+.pair-buttons .proximo{
+  background-color: #1b2c48;
+  border: 1px solid #1b2c48;
+  color: #fff;
 }
 
 .cancelar{
   background-color: #fff;
-  border: 1px solid #454B60;
-  color: #454B60;
+  border: 1px solid #1b2c48;
+  color: #1b2c48;
 }
 
 @media (prefers-color-scheme: light) {
@@ -82,3 +93,4 @@ button:focus-visible {
     color: #747bff;
   }
 }
+
