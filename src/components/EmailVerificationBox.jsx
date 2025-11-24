@@ -4,8 +4,10 @@ import { useLocation, useNavigate } from "react-router-dom";
 
 function EmailVeridicationBox() {
     const location = useLocation();
+
     const email = location.state?.verificationEmail;
     const resetPassword = location.state?.resetPassword;
+
     const navigate = useNavigate();
 
     const [code, setCode] = useState(new Array(4).fill(""));
@@ -23,12 +25,22 @@ function EmailVeridicationBox() {
         }
     };
 
-    function verificarCodigo() {
+    const verificarCodigo = async () => {
       
       if(resetPassword){
         navigate("/reset-password");
       }else{
-        Swal.fire({
+
+        console.log(JSON.stringify({ email: email, code: code.join("") }))
+
+        const response = await fetch("http://localhost:8000/api/v1/auth/activate-account/", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email: email, code: code.join("") })
+        });
+
+        if (response.ok){
+            Swal.fire({
             icon: "success",
             title: "Registro realizado com sucesso!",
             text: "Voce sera redirencionado para a pagina de login em 5 segundos...",
@@ -37,6 +49,8 @@ function EmailVeridicationBox() {
             timer: 5000
         });
         navigate("/login");
+        }
+      
       }
     }
 

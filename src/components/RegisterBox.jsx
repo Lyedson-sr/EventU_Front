@@ -19,6 +19,8 @@ function RegisterBox() {
 
   const navigate = useNavigate();
 
+  
+  
   // FUNÇÕES para alternar a visibilidade
   const togglePasswordVisibility = () => {
     setShowPassword(prev => !prev);
@@ -28,7 +30,7 @@ function RegisterBox() {
     setShowConfirmPassword(prev => !prev);
   };
 
-  function register() {
+  const register = async (e) => {
       // 1. **VERIFICAÇÃO DE CAMPOS VAZIOS (PRIORIDADE)**
       if (name === "" || email === "" || password === "" || confirmPassword === "" || userType === "") {
         Swal.fire({
@@ -81,12 +83,47 @@ function RegisterBox() {
         return; 
       }
 
-      navigate("/email-verification", {
+      e.preventDefault();
+
+    // O objeto que será enviado
+    const userData = {
+      email: email,
+      name: name,
+      role: "student",
+      password: password,
+    };
+
+    console.log(userData)
+
+    try {
+      // Enviar o POST para a API
+      const response = await fetch('http://127.0.0.1:8000/api/v1/auth/register/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(userData),
+      });
+
+      const result = await response.json();
+      
+      if (response.ok) {
+        console.log('Usuário registrado com sucesso!', result);
+
+        navigate("/email-verification", {
         state: { 
           verificationEmail: email,
-          resetPassword: false
-        }
+          resetPassword: false}
       });
+    
+      } else {
+        console.error('Erro ao registrar usuário:', result);
+      }
+    } catch (error) {
+      console.error('Erro na requisição:', error);
+    }
+
+    
   }
   return (
     <div className="register-box">
@@ -121,7 +158,7 @@ function RegisterBox() {
         </div>
         
         <div className="roles">
-          <input className="radio" type="radio" name="tipoUsuario" value="aluno" id="aluno" onChange={(e) => setUserType(e.target.value)} />
+          <input className="radio" type="radio" name="tipoUsuario" value="student" id="aluno" onChange={(e) => setUserType(e.target.value)} />
           <label htmlFor="aluno" className="type-user">Aluno</label>
 
           <input className="radio" type="radio" name="tipoUsuario" value="professor" id="professor" onChange={(e) => setUserType(e.target.value)} />
