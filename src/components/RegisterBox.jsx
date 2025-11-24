@@ -31,59 +31,59 @@ function RegisterBox() {
   };
 
   const register = async (e) => {
-      // 1. **VERIFICAÇÃO DE CAMPOS VAZIOS (PRIORIDADE)**
-      if (name === "" || email === "" || password === "" || confirmPassword === "" || userType === "") {
-        Swal.fire({
-          icon: "error",
-          title: "Existe campos faltantes!",
-          text: "Preencha todos os campos!",
-        });
-        return; 
-      }
+    // 1. **VERIFICAÇÃO DE CAMPOS VAZIOS (PRIORIDADE)**
+    if (name === "" || email === "" || password === "" || confirmPassword === "" || userType === "") {
+      Swal.fire({
+        icon: "error",
+        title: "Existe campos faltantes!",
+        text: "Preencha todos os campos!",
+      });
+      return; 
+    }
 
-      // 2. **VERIFICAÇÃO DO EMAIL**
-      const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
-      if (!email.match(emailRegex)) {
-        Swal.fire({
-          icon: "error",
-          title: "Email inválido!",
-          text: "Por favor, insira um email válido!",
-        });
-        return; 
-      }
+    // 2. **VERIFICAÇÃO DO EMAIL**
+    const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+    if (!email.match(emailRegex)) {
+      Swal.fire({
+        icon: "error",
+        title: "Email inválido!",
+        text: "Por favor, insira um email válido!",
+      });
+      return; 
+    }
 
-      // 3. **VERIFICAÇÃO DE COMPLEXIDADE DA SENHA**
-      const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d).{8,}$/; 
-      if(!passwordRegex.test(password)){
-        Swal.fire({
-          icon: "error",
-          title: "Senha fraca!",
-          text: "A senha deve ter no mínimo 8 caracteres, incluindo letras e números.",
-        });
-        return; 
-      }
+    // 3. **VERIFICAÇÃO DE COMPLEXIDADE DA SENHA**
+    const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d).{8,}$/; 
+    if(!passwordRegex.test(password)){
+      Swal.fire({
+        icon: "error",
+        title: "Senha fraca!",
+        text: "A senha deve ter no mínimo 8 caracteres, incluindo letras e números.",
+      });
+      return; 
+    }
       
-      // 4. **VERIFICAÇÃO DE SENHAS CORRESPONDENTES**
-      if (password !== confirmPassword) {
-        Swal.fire({
-          icon: "error",
-          title: "Senhas não conferem!",
-          text: "As senhas digitadas não são iguais.",
-        });
-        return; 
-      }
+    // 4. **VERIFICAÇÃO DE SENHAS CORRESPONDENTES**
+    if (password !== confirmPassword) {
+      Swal.fire({
+        icon: "error",
+        title: "Senhas não conferem!",
+        text: "As senhas digitadas não são iguais.",
+      });
+      return; 
+    }
 
-      // 5. **VERIFICAÇÃO DE TERMOS**
-      if (termsAccepted === false) {
-        Swal.fire({
-          icon: "error",
-          title: "Termos não aceitos!",
-          text: "Você deve aceitar os termos e condições para continuar!",
-        });
-        return; 
-      }
+    // 5. **VERIFICAÇÃO DE TERMOS**
+    if (termsAccepted === false) {
+      Swal.fire({
+        icon: "error",
+        title: "Termos não aceitos!",
+        text: "Você deve aceitar os termos e condições para continuar!",
+      });
+      return; 
+    }
 
-      e.preventDefault();
+    e.preventDefault();
 
     // O objeto que será enviado
     const userData = {
@@ -122,8 +122,6 @@ function RegisterBox() {
     } catch (error) {
       console.error('Erro na requisição:', error);
     }
-
-    
   }
   return (
     <div className="register-box">
