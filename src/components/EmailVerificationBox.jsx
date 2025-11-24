@@ -1,11 +1,15 @@
 import {useState } from "react";
-import { useLocation } from "react-router-dom";
+import Swal from "sweetalert2";
+import { useLocation, useNavigate } from "react-router-dom";
 
 function EmailVeridicationBox() {
     const location = useLocation();
     const email = location.state?.verificationEmail;
+    const resetPassword = location.state?.resetPassword;
+    const navigate = useNavigate();
 
     const [code, setCode] = useState(new Array(4).fill(""));
+    console.log("resetPassword:", resetPassword);
 
     const handleChange = (value, index) => {
         if (!/^\d*$/.test(value)) return;
@@ -19,29 +23,43 @@ function EmailVeridicationBox() {
         }
     };
 
+    function verificarCodigo() {
+      
+      if(resetPassword){
+        navigate("/reset-password");
+      }else{
+        Swal.fire({
+            icon: "success",
+            title: "Registro realizado com sucesso!",
+            text: "Voce sera redirencionado para a pagina de login em 5 segundos...",
+            footer: 'Clique <a href="/login">aqui</a> se nao for redirecionado automaticamente.',
+            showConfirmButton: false,
+            timer: 5000
+        });
+        navigate("/login");
+      }
+    }
+
   return (
     <div className="email-verification-box">
       <h2>Insira o código de verificação</h2>
       <p className="reset-password-desc">Digite o código de 4 números enviado ao email: {email}</p>
 
-      <form className="otp-container">
-        <div className="gourp-otp-inputs">
-            {code.map((num, index) => (
-            <input
-                key={index}
-                id={`otp-${index}`}
-                type="text"
-                maxLength="1"
-                value={num}
-                onChange={(e) => handleChange(e.target.value, index)}
-                className="otp-input"
-            />
-            ))}
-        </div>
+      <div className="gourp-otp-inputs">
+          {code.map((num, index) => (
+          <input
+              key={index}
+              id={`otp-${index}`}
+              type="text"
+              maxLength="1"
+              value={num}
+              onChange={(e) => handleChange(e.target.value, index)}
+              className="otp-input"
+          />
+          ))}
+      </div>
 
-        <button className="enter-btn">Confirmar Email</button>
-
-      </form>
+      <button className="enter-btn" onClick={verificarCodigo}>Confirmar Email</button>
     </div>
   );
 }
