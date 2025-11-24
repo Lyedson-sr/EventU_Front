@@ -43,9 +43,7 @@ function ForgotPassword() {
           <a>
             <button onClick={emailVeridication} type="button" className="proximo" >Proximo</button>
           </a>
-            
         </div>
-
     </div>
   );
 }

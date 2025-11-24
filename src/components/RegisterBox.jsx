@@ -1,6 +1,6 @@
 import { useState } from "react";
 import Swal from "sweetalert2";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import EyeOpenIcon from "../assets/show.png";
 import EyeClosedIcon from "../assets/hide.png";
@@ -16,6 +16,8 @@ function RegisterBox() {
   // NOVOS ESTADOS para controlar a visibilidade das senhas
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  const navigate = useNavigate();
 
   // FUNÇÕES para alternar a visibilidade
   const togglePasswordVisibility = () => {
@@ -79,11 +81,11 @@ function RegisterBox() {
         return; 
       }
 
-      // 6. **SE TUDO ESTIVER OK, PROSSEGUE COM O CADASTRO**
-      Swal.fire({
-        icon: "success",
-        title: "Dados Válidos!",
-        text: "Pronto para enviar o cadastro para o backend.",
+      navigate("/email-verification", {
+        state: { 
+          verificationEmail: email,
+          resetPassword: false
+        }
       });
   }
   return (
@@ -135,9 +137,9 @@ function RegisterBox() {
           <Link to="/login">
             <button type="button" className="cancelar">Cancelar</button>
           </Link>
-          <Link>
+          <a>
             <button type="button" className="proximo" onClick={register}>Proximo</button>
-          </Link>
+          </a>
         </div>
       </form>
     </div>
