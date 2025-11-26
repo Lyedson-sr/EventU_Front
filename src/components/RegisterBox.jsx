@@ -1,6 +1,6 @@
 import { useState } from "react";
 import Swal from "sweetalert2";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import EyeOpenIcon from "../assets/show.png";
 import EyeClosedIcon from "../assets/hide.png";
@@ -17,76 +17,111 @@ function RegisterBox() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
+  const navigate = useNavigate();
+
+  
+  
   // FUNÇÕES para alternar a visibilidade
   const togglePasswordVisibility = () => {
-    console.log("Toggling password visibility");
     setShowPassword(prev => !prev);
   };
 
   const toggleConfirmPasswordVisibility = () => {
-    console.log("Toggling password visibility2");
     setShowConfirmPassword(prev => !prev);
   };
 
-  function register() {
-      // 1. **VERIFICAÇÃO DE CAMPOS VAZIOS (PRIORIDADE)**
-      if (name === "" || email === "" || password === "" || confirmPassword === "" || userType === "") {
-        Swal.fire({
-          icon: "error",
-          title: "Existe campos faltantes!",
-          text: "Preencha todos os campos!",
-        });
-        return; 
-      }
-
-      // 2. **VERIFICAÇÃO DO EMAIL**
-      const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
-      if (!email.match(emailRegex)) {
-        Swal.fire({
-          icon: "error",
-          title: "Email inválido!",
-          text: "Por favor, insira um email válido!",
-        });
-        return; 
-      }
-
-      // 3. **VERIFICAÇÃO DE COMPLEXIDADE DA SENHA**
-      const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d).{8,}$/; 
-      if(!passwordRegex.test(password)){
-        Swal.fire({
-          icon: "error",
-          title: "Senha fraca!",
-          text: "A senha deve ter no mínimo 8 caracteres, incluindo letras e números.",
-        });
-        return; 
-      }
-      
-      // 4. **VERIFICAÇÃO DE SENHAS CORRESPONDENTES**
-      if (password !== confirmPassword) {
-        Swal.fire({
-          icon: "error",
-          title: "Senhas não conferem!",
-          text: "As senhas digitadas não são iguais.",
-        });
-        return; 
-      }
-
-      // 5. **VERIFICAÇÃO DE TERMOS**
-      if (termsAccepted === false) {
-        Swal.fire({
-          icon: "error",
-          title: "Termos não aceitos!",
-          text: "Você deve aceitar os termos e condições para continuar!",
-        });
-        return; 
-      }
-
-      // 6. **SE TUDO ESTIVER OK, PROSSEGUE COM O CADASTRO**
+  const register = async (e) => {
+    // 1. **VERIFICAÇÃO DE CAMPOS VAZIOS (PRIORIDADE)**
+    if (name === "" || email === "" || password === "" || confirmPassword === "" || userType === "") {
       Swal.fire({
-        icon: "success",
-        title: "Dados Válidos!",
-        text: "Pronto para enviar o cadastro para o backend.",
+        icon: "error",
+        title: "Existe campos faltantes!",
+        text: "Preencha todos os campos!",
       });
+      return; 
+    }
+
+    // 2. **VERIFICAÇÃO DO EMAIL**
+    const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+    if (!email.match(emailRegex)) {
+      Swal.fire({
+        icon: "error",
+        title: "Email inválido!",
+        text: "Por favor, insira um email válido!",
+      });
+      return; 
+    }
+
+    // 3. **VERIFICAÇÃO DE COMPLEXIDADE DA SENHA**
+    const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d).{8,}$/; 
+    if(!passwordRegex.test(password)){
+      Swal.fire({
+        icon: "error",
+        title: "Senha fraca!",
+        text: "A senha deve ter no mínimo 8 caracteres, incluindo letras e números.",
+      });
+      return; 
+    }
+      
+    // 4. **VERIFICAÇÃO DE SENHAS CORRESPONDENTES**
+    if (password !== confirmPassword) {
+      Swal.fire({
+        icon: "error",
+        title: "Senhas não conferem!",
+        text: "As senhas digitadas não são iguais.",
+      });
+      return; 
+    }
+
+    // 5. **VERIFICAÇÃO DE TERMOS**
+    if (termsAccepted === false) {
+      Swal.fire({
+        icon: "error",
+        title: "Termos não aceitos!",
+        text: "Você deve aceitar os termos e condições para continuar!",
+      });
+      return; 
+    }
+
+    e.preventDefault();
+
+    // O objeto que será enviado
+    const userData = {
+      email: email,
+      name: name,
+      role: "student",
+      password: password,
+    };
+
+    console.log(userData)
+
+    try {
+      // Enviar o POST para a API
+      const response = await fetch('http://127.0.0.1:8000/api/v1/auth/register/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(userData),
+      });
+
+      const result = await response.json();
+      
+      if (response.ok) {
+        console.log('Usuário registrado com sucesso!', result);
+
+        navigate("/email-verification", {
+        state: { 
+          verificationEmail: email,
+          resetPassword: false}
+      });
+    
+      } else {
+        console.error('Erro ao registrar usuário:', result);
+      }
+    } catch (error) {
+      console.error('Erro na requisição:', error);
+    }
   }
   return (
     <div className="register-box">
@@ -121,7 +156,7 @@ function RegisterBox() {
         </div>
         
         <div className="roles">
-          <input className="radio" type="radio" name="tipoUsuario" value="aluno" id="aluno" onChange={(e) => setUserType(e.target.value)} />
+          <input className="radio" type="radio" name="tipoUsuario" value="student" id="aluno" onChange={(e) => setUserType(e.target.value)} />
           <label htmlFor="aluno" className="type-user">Aluno</label>
 
           <input className="radio" type="radio" name="tipoUsuario" value="professor" id="professor" onChange={(e) => setUserType(e.target.value)} />
@@ -137,9 +172,9 @@ function RegisterBox() {
           <Link to="/login">
             <button type="button" className="cancelar">Cancelar</button>
           </Link>
-          <Link>
+          <a>
             <button type="button" className="proximo" onClick={register}>Proximo</button>
-          </Link>
+          </a>
         </div>
       </form>
     </div>

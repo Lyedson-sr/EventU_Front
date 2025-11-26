@@ -1,0 +1,57 @@
+.email-verification-container{
+    display: flex;
+    padding: 40px;
+    box-sizing: border-box;
+}
+
+.email-verification-box{
+    width: 380px;
+    padding: 50px 90px;
+    border: 2px solid #1c2b49;
+    border-radius: 20px;
+    text-align: center;
+}
+
+.otp-container {
+    margin-top: 20px;
+}
+
+.email-verification-box h2 {
+    margin: 0;
+    color: #454B60;
+}
+
+.otp-input {
+    color: #1c2b49;
+    width: 45px;
+    height: 55px;
+    font-size: 24px;
+    text-align: center;
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    background-color: #fff;
+}
+
+.otp-input:focus {
+    border-color: #1c2b49;
+    outline: none;
+}
+
+.enter-btn{
+    width: 100%;
+    border: none;
+    height: 35px;
+    background: #1b2c48;
+    color: white;
+    border-radius: 6px;
+    font-size: 14px;
+    cursor: pointer;
+    margin-top: 30px;
+}
+
+.gourp-otp-inputs{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    gap: 5%;
+}
