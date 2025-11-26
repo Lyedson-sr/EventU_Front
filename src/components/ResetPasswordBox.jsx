@@ -8,6 +8,9 @@ function ResetPasswordBox(){
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
 
+    //const email = location.state?.verificationEmail;
+    const email = "kayquemts@gmail.com";
+    
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
@@ -22,7 +25,7 @@ function ResetPasswordBox(){
         setShowConfirmPassword(prev => !prev);
     };
 
-    function verificarSenhas(){
+    const verificarSenhas = async () => {
         if (password !== confirmPassword) {
             Swal.fire({
                 icon: "error",
@@ -41,16 +44,33 @@ function ResetPasswordBox(){
             });
             return; 
         }
-        setStartRedirect(true);
 
-        Swal.fire({
-            icon: "success",
-            title: "Redefinição de senha realizado com sucesso!",
-            text: "Voce sera redirencionado para a pagina de login em 5 segundos...",
-            footer: 'Clique <a href="/login">aqui</a> se nao for redirecionado automaticamente.',
-            showConfirmButton: false,
-            timer: 5000
+        const response = await fetch("http://localhost:8000/api/v1/auth/forgot-password/", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email: email, new_password: password })
         });
+
+        if (response.ok) {
+            setStartRedirect(true);
+            Swal.fire({
+                icon: "success",
+                title: "Redefinição de senha realizado com sucesso!",
+                text: "Voce sera redirencionado para a pagina de login em 5 segundos...",
+                footer: 'Clique <a href="/login">aqui</a> se nao for redirecionado automaticamente.',
+                showConfirmButton: false,
+                timer: 5000
+            });
+        }else{
+            console.log("Erro ao redefinir a senha");
+            console.log(await response.text());
+            Swal.fire({
+                icon: "error",
+                title: "Erro ao redefinir a senha!",
+                text: "Por favor, tente novamente mais tarde.",
+            });
+        }
+        
 
     }
     useEffect(() => {
