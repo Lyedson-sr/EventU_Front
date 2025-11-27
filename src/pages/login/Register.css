@@ -73,9 +73,9 @@ form input[type="submit"]{
   position: relative;
 }
 
-.password-toggle {
+.password-toggle-cadastro {
   position: absolute;
-  top: 60%;
+  top: 60%; 
   right: 10px;
   transform: translateY(-50%);
   cursor: pointer;

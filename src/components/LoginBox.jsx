@@ -6,12 +6,24 @@ function LoginBox() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  const [userType, setUserType] = useState("");
+
+
   const efetuarLogin = async () => {
+
+    if(userType === ""){
+      Swal.fire({
+        icon: "error",
+        title: "Selecione um tipo de usuário!",
+        text: "Por favor, selecione um tipo de usuário para continuar.",
+      });
+      return;
+    }
     
     const response = await fetch("http://localhost:8000/api/v1/auth/login/", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email: email, password: password })
+      body: JSON.stringify({ email: email, password: password, role: userType })
     });
 
     if (response.ok) {
@@ -44,13 +56,13 @@ function LoginBox() {
       </Link>
 
       <div className="roles">
-        <input className="radio" type="radio" name="tipoUsuario" value="aluno" id="aluno"/>
+        <input className="radio" type="radio" name="tipoUsuario" value="student" id="aluno" onChange={(e) => setUserType(e.target.value)} />
         <label htmlFor="aluno" className="type-user">Aluno</label>
 
-        <input className="radio" type="radio" name="tipoUsuario" value="professor" id="professor"/>
+        <input className="radio" type="radio" name="tipoUsuario" value="professor" id="professor" onChange={(e) => setUserType(e.target.value)} />
         <label htmlFor="professor" className="type-user">Professor</label>
 
-        <input className="radio" type="radio" name="tipoUsuario" value="admin" id="admin" />
+        <input className="radio" type="radio" name="tipoUsuario" value="admin" id="admin" onChange={(e) => setUserType(e.target.value)}/>
         <label htmlFor="admin" className="type-user">Admin</label>
       </div>
 

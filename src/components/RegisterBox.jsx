@@ -135,7 +135,7 @@ function RegisterBox() {
 
         <div className="password-item">
           <input value={password} className="input-register" type={showPassword ? "text" : "password"} placeholder="Senha" onChange={(e) => setPassword(e.target.value)} />
-          <span className="password-toggle" onClick={togglePasswordVisibility}>
+          <span className="password-toggle-cadastro" onClick={togglePasswordVisibility}>
               <img 
               src={showPassword ? EyeClosedIcon : EyeOpenIcon} 
               alt="Toggle Confirm Password Visibility"
@@ -146,7 +146,7 @@ function RegisterBox() {
 
         <div className="password-item">
           <input value={confirmPassword} className="input-register" type={showConfirmPassword ? "text" : "password"} placeholder="Confirmar senha" onChange={(e) => setConfirmPassword(e.target.value)} />
-          <span className="password-toggle" onClick={toggleConfirmPasswordVisibility}>
+          <span className="password-toggle-cadastro" onClick={toggleConfirmPasswordVisibility}>
             <img 
               src={showConfirmPassword ? EyeClosedIcon : EyeOpenIcon} 
               alt="Toggle Confirm Password Visibility"
