@@ -65,6 +65,12 @@ function EmailVeridicationBox() {
             timer: 5000
           });
           navigate("/login");
+        } else{
+          Swal.fire({
+          icon: "error",
+          title: "Código inválido!",
+          text: "O código de verificação inserido é inválido. Por favor, tente novamente."
+            });
         }
       
     }
