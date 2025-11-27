@@ -2,19 +2,20 @@ import { useState, useEffect } from "react";
 import Swal from "sweetalert2";
 import EyeOpenIcon from "../assets/show.png";
 import EyeClosedIcon from "../assets/hide.png";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 
 function ResetPasswordBox(){
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
 
-    //const email = location.state?.verificationEmail;
-    const email = "kayquemts@gmail.com";
+    const location = useLocation();
+    const email = location.state?.verificationEmail;
+    console.log("Email para redefinição de senha:", email);
     
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-    const [startRedirect, setStartRedirect] = useState(false); // <--- novo estado
+    const [startRedirect, setStartRedirect] = useState(false);
     const navigate = useNavigate();
 
     const togglePasswordVisibility = () => {
@@ -45,7 +46,10 @@ function ResetPasswordBox(){
             return; 
         }
 
-        const response = await fetch("http://localhost:8000/api/v1/auth/forgot-password/", {
+        console.log("Email para redefinição de senha:", email);
+        console.log("Nova senha:", password);
+
+        const response = await fetch("http://localhost:8000/api/v1/auth/reset-password/", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ email: email, new_password: password })

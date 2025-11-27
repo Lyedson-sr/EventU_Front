@@ -12,6 +12,7 @@ function EmailVeridicationBox() {
 
     const [code, setCode] = useState(new Array(4).fill(""));
     console.log("resetPassword:", resetPassword);
+    console.log("Email inserido:", email);
 
     const handleChange = (value, index) => {
       if (!/^\d*$/.test(value)) return;
@@ -35,9 +36,9 @@ function EmailVeridicationBox() {
         });
 
         if (response.ok) {
+            console.log("Código verificado com sucesso. Email: ", email);
             navigate("/reset-password", {
-              state: { 
-                verificationEmail: email}
+              state: { verificationEmail: email}
             });
         }else{
           Swal.fire({
