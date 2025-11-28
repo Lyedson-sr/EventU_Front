@@ -1,6 +1,8 @@
 import {useState } from "react";
 import Swal from "sweetalert2";
 import { useLocation, useNavigate } from "react-router-dom";
+import {sendResetCode} from "../service/authService";
+import { activateAccount } from "../service/authService";
 
 function EmailVeridicationBox() {
     const location = useLocation();
@@ -11,8 +13,6 @@ function EmailVeridicationBox() {
     const navigate = useNavigate();
 
     const [code, setCode] = useState(new Array(4).fill(""));
-    console.log("resetPassword:", resetPassword);
-    console.log("Email inserido:", email);
 
     const handleChange = (value, index) => {
       if (!/^\d*$/.test(value)) return;
@@ -29,17 +29,14 @@ function EmailVeridicationBox() {
     const verificarCodigo = async () => {
       
       if(resetPassword){
-        const response = await fetch("http://localhost:8000/api/v1/auth/reset-code/", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email: email, code: code.join("") })
-        });
+        const result = await sendResetCode(email, code.join(""));
+        console.log("Resultado: ");
+        console.log(result);
 
-        if (response.ok) {
-            console.log("Código verificado com sucesso. Email: ", email);
-            navigate("/reset-password", {
-              state: { verificationEmail: email}
-            });
+        if (result.ok) {
+          navigate("/reset-password", {
+            state: { verificationEmail: email}
+          });
         }else{
           Swal.fire({
             icon: "error",
@@ -49,13 +46,10 @@ function EmailVeridicationBox() {
         }
 
       }else{
-        const response = await fetch("http://localhost:8000/api/v1/auth/activate-account/", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email: email, code: code.join("") })
-        });
 
-        if (response.ok){
+        const result = await activateAccount(email, code.join(""));
+
+        if (result.ok){
           Swal.fire({
             icon: "success",
             title: "Registro realizado com sucesso!",

@@ -1,6 +1,8 @@
 import { useState } from "react";
 import Swal from "sweetalert2";
 import { Link, useNavigate } from "react-router-dom";
+import { registerUser } from "../service/authService";
+
 
 import EyeOpenIcon from "../assets/show.png";
 import EyeClosedIcon from "../assets/hide.png";
@@ -93,23 +95,11 @@ function RegisterBox() {
       password: password,
     };
 
-    console.log(userData)
 
     try {
-      // Enviar o POST para a API
-      const response = await fetch('http://127.0.0.1:8000/api/v1/auth/register/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(userData),
-      });
-
-      const result = await response.json();
+      const result = await registerUser(email, name, userType, password);
       
-      if (response.ok) {
-        console.log('Usuário registrado com sucesso!', result);
-
+      if (result.ok) {
         navigate("/email-verification", {
         state: { 
           verificationEmail: email,

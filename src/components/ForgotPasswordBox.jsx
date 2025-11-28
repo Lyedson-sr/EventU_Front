@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import ResetPassword from "../pages/login/ResetPassword";
+import { forgotPassword } from "../service/authService";
 
 function ForgotPassword() {
   const [email, setEmail] = useState("");
@@ -17,13 +18,8 @@ function ForgotPassword() {
       });
       return; 
     }
-    console.log("Email para verificação:", email);
 
-    const response = await fetch("http://localhost:8000/api/v1/auth/forgot-password/", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email: email })
-    });
+    const response = await forgotPassword(email);
 
     if (response.ok) {
       navigate("/email-verification", {

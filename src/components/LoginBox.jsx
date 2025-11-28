@@ -1,15 +1,26 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
+import EyeOpenIcon from "../assets/show.png";
+import EyeClosedIcon from "../assets/hide.png";
+import { efetuarLogin } from "../service/authService";
+
 
 function LoginBox() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const [userType, setUserType] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+
+  
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(prev => !prev);
+  };
 
 
-  const efetuarLogin = async () => {
+  const handleLogin = async () => {
 
     if(userType === ""){
       Swal.fire({
@@ -20,13 +31,9 @@ function LoginBox() {
       return;
     }
     
-    const response = await fetch("http://localhost:8000/api/v1/auth/login/", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email: email, password: password, role: userType })
-    });
+    const result = await efetuarLogin(email, password, userType);
 
-    if (response.ok) {
+    if (result.ok) {
       Swal.fire({
         icon: "success",
         title: "Login realizado com sucesso! - Em breve você será redirecionado.",
@@ -49,8 +56,12 @@ function LoginBox() {
       </p>
 
       <input value={email} className="input-login" type="email" placeholder="Email" onChange={(e) => setEmail(e.target.value)} />
-      <input value={password} className="input-login" type="password" placeholder="Senha" onChange={(e) => setPassword(e.target.value)}/>
-
+      <div className="password-item">
+        <input value={password} className="input-register" type={showPassword ? "text" : "password"} placeholder="Senha" onChange={(e) => setPassword(e.target.value)} />
+        <span className="password-toggle-cadastro" onClick={togglePasswordVisibility}>
+          <img src={showPassword ? EyeClosedIcon : EyeOpenIcon} alt="Toggle Confirm Password Visibility" className="eye-icon" />
+          </span>
+        </div>
       <Link to="/forgot-password" className="forgot">
         Esqueceu sua senha?
       </Link>
@@ -67,7 +78,7 @@ function LoginBox() {
       </div>
 
       <Link to="">
-        <button className="enter-btn" onClick={efetuarLogin}>Entrar</button>
+        <button className="enter-btn" onClick={handleLogin}>Entrar</button>
       </Link>
       
 
