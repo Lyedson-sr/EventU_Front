@@ -3,6 +3,7 @@ import Swal from "sweetalert2";
 import EyeOpenIcon from "../assets/show.png";
 import EyeClosedIcon from "../assets/hide.png";
 import { Link, useNavigate, useLocation } from "react-router-dom";
+import { restarPassword } from "../service/authService";
 
 function ResetPasswordBox(){
     const [password, setPassword] = useState("");
@@ -10,7 +11,6 @@ function ResetPasswordBox(){
 
     const location = useLocation();
     const email = location.state?.verificationEmail;
-    console.log("Email para redefinição de senha:", email);
     
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -46,14 +46,8 @@ function ResetPasswordBox(){
             return; 
         }
 
-        console.log("Email para redefinição de senha:", email);
-        console.log("Nova senha:", password);
 
-        const response = await fetch("http://localhost:8000/api/v1/auth/reset-password/", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ email: email, new_password: password })
-        });
+        const response = await restarPassword(email, password);
 
         if (response.ok) {
             setStartRedirect(true);
@@ -66,8 +60,6 @@ function ResetPasswordBox(){
                 timer: 5000
             });
         }else{
-            console.log("Erro ao redefinir a senha");
-            console.log(await response.text());
             Swal.fire({
                 icon: "error",
                 title: "Erro ao redefinir a senha!",
