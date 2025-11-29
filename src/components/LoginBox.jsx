@@ -1,9 +1,10 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import EyeOpenIcon from "../assets/show.png";
 import EyeClosedIcon from "../assets/hide.png";
 import { efetuarLogin } from "../service/authService";
+import { useAuth } from "../context/AuthContext";
 
 
 function LoginBox() {
@@ -13,7 +14,10 @@ function LoginBox() {
   const [userType, setUserType] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
-  
+  const navigate = useNavigate();
+
+
+  const { auth, setAuth } = useAuth();
 
   const togglePasswordVisibility = () => {
     setShowPassword(prev => !prev);
@@ -28,16 +32,25 @@ function LoginBox() {
         title: "Selecione um tipo de usuário!",
         text: "Por favor, selecione um tipo de usuário para continuar.",
       });
-      return;
     }
     
     const result = await efetuarLogin(email, password, userType);
-
+    
     if (result.ok) {
+
+      const { data, tokens } = result;
+
       Swal.fire({
         icon: "success",
         title: "Login realizado com sucesso! - Em breve você será redirecionado.",
       });
+
+      setAuth({
+        access: tokens.access,
+        user: data,
+      });
+
+      navigate("/main")    
     }else{
       Swal.fire({
         icon: "error",
@@ -47,6 +60,10 @@ function LoginBox() {
     }
   }  
 
+  useEffect(() => {
+    console.log("Auth mudou:", auth);
+  }, [auth]);
+
   return (
     <div className="login-box">
       <h2>Login</h2>
@@ -55,32 +72,34 @@ function LoginBox() {
         Digite seu nome de usuário e senha<br />para fazer login
       </p>
 
-      <input value={email} className="input-login" type="email" placeholder="Email" onChange={(e) => setEmail(e.target.value)} />
-      <div className="password-item">
-        <input value={password} className="input-register" type={showPassword ? "text" : "password"} placeholder="Senha" onChange={(e) => setPassword(e.target.value)} />
-        <span className="password-toggle-cadastro" onClick={togglePasswordVisibility}>
-          <img src={showPassword ? EyeClosedIcon : EyeOpenIcon} alt="Toggle Confirm Password Visibility" className="eye-icon" />
-          </span>
+      <form>
+        <input value={email} className="input-login" type="email" placeholder="Email" onChange={(e) => setEmail(e.target.value)} />
+        <div className="password-item">
+          <input value={password} className="input-register" type={showPassword ? "text" : "password"} placeholder="Senha" onChange={(e) => setPassword(e.target.value)} />
+          <span className="password-toggle-cadastro" onClick={togglePasswordVisibility}>
+            <img src={showPassword ? EyeClosedIcon : EyeOpenIcon} alt="Toggle Confirm Password Visibility" className="eye-icon" />
+            </span>
+          </div>
+        <Link to="/forgot-password" className="forgot">
+          Esqueceu sua senha?
+        </Link>
+
+        <div className="roles">
+          <input className="radio" type="radio" name="tipoUsuario" value="student" id="aluno" onChange={(e) => setUserType(e.target.value)} />
+          <label htmlFor="aluno" className="type-user">Aluno</label>
+
+          <input className="radio" type="radio" name="tipoUsuario" value="professor" id="professor" onChange={(e) => setUserType(e.target.value)} />
+          <label htmlFor="professor" className="type-user">Professor</label>
+
+          <input className="radio" type="radio" name="tipoUsuario" value="admin" id="admin" onChange={(e) => setUserType(e.target.value)}/>
+          <label htmlFor="admin" className="type-user">Admin</label>
         </div>
-      <Link to="/forgot-password" className="forgot">
-        Esqueceu sua senha?
-      </Link>
 
-      <div className="roles">
-        <input className="radio" type="radio" name="tipoUsuario" value="student" id="aluno" onChange={(e) => setUserType(e.target.value)} />
-        <label htmlFor="aluno" className="type-user">Aluno</label>
-
-        <input className="radio" type="radio" name="tipoUsuario" value="professor" id="professor" onChange={(e) => setUserType(e.target.value)} />
-        <label htmlFor="professor" className="type-user">Professor</label>
-
-        <input className="radio" type="radio" name="tipoUsuario" value="admin" id="admin" onChange={(e) => setUserType(e.target.value)}/>
-        <label htmlFor="admin" className="type-user">Admin</label>
-      </div>
-
-      <Link to="">
-        <button className="enter-btn" onClick={handleLogin}>Entrar</button>
-      </Link>
-      
+        <Link to="">
+          <button className="enter-btn" onClick={handleLogin}><input type="submit" /> Entrar</button>
+        </Link>
+      </form>
+    
 
       <p className="signup">
         Não tem uma conta?{" "}

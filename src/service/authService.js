@@ -10,13 +10,20 @@ export async function efetuarLogin(email, password, userType) {
 
   try {
     const response = await loginRequest(email, password, userType);
+    
+    const responseData = await response.json();
 
     if (response.ok) {
-      return { ok: true };
+        return {
+            ok: true,
+            data: responseData.data,       
+            tokens: responseData.tokens,   
+        };
     } else {
       return { ok: false, error: "Email ou senha incorretos." };
     }
   } catch (err) {
+    console.error("Erro ao conectar com o servidor:", err);
     return { ok: false, error: "Erro ao conectar com o servidor." };
   }
 }
