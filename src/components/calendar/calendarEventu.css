@@ -1,0 +1,80 @@
+
+/* --- WRAPPER PRINCIPAL --- */
+.index-container .calendar-wrapper {
+  width: 100%;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+/* --- TOPO --- */
+.index-container .calendar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.index-container .calendar-header h2 {
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: #3a3f52;
+}
+
+.index-container .calendar-header span {
+  padding: 0 10px;
+  cursor: pointer;
+}
+
+/* --- BOTÕES DE VISUALIZAÇÃO --- */
+.index-container .view-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.index-container .view-buttons button {
+  background: #363d55;
+  padding: 10px 18px;
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: white;
+  cursor: pointer;
+}
+
+.index-container .view-buttons button:hover {
+  background: #4e5678;
+}
+
+/* --- GRID ANUAL --- */
+.index-container .year-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 25px;
+  margin-top: 10px;
+}
+
+.index-container .year-month {
+  background: white;
+  padding: 12px;
+  border-radius: 12px;
+  box-shadow: 0 4px 7px rgba(0,0,0,0.10);
+}
+
+.index-container .year-month h4 {
+  text-align: center;
+  margin-bottom: 5px;
+  font-size: 16px;
+  color: #444;
+}
+
+/* mini calendário */
+.index-container .year-month .fc {
+  font-size: 10px;
+}
+
+/* Remover bordas exageradas do FullCalendar */
+.index-container .fc-theme-standard td,
+.fc-theme-standard th {
+  border-color: #e2e2e2;
+}

@@ -1,0 +1,100 @@
+/* WRAPPER DO CALENDÁRIO — tamanho exato para 7 colunas de 2em */
+.left-container .calendar-wrapper {
+  width: calc(2em * 8 + 12px); /* 7 colunas com um pequeno padding */
+  margin: auto;
+  overflow: hidden;
+  font-family: "Inter", sans-serif;
+}
+
+/* Título do mês */
+.left-container .fc .fc-toolbar-title {
+  font-size: 1rem;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+/* Botões < e > */
+.left-container .fc .fc-button {
+  background: transparent !important;
+  border: none !important;
+  color: #666 !important;
+  font-size: 1.2rem;
+  box-shadow: none !important;
+}
+
+.left-container .fc .fc-button:hover {
+  background: #f0f0f0 !important;
+}
+
+/* Cabeçalho dos dias */
+.left-container .fc-col-header-cell {
+  font-size: 0.75rem;
+  color: #666;
+  padding: 4px 0;
+  margin: 0;
+}
+
+/* Remove bordas fortes */
+.left-container .fc-theme-standard td,
+.fc-theme-standard th {
+  border-color: #e5e5e5;
+}
+
+/* =============================== */
+/*  🔥 GRID FIXO (QUADRADOS 2em)   */
+/* =============================== */
+
+/* Ajuste geral para impedir o FullCalendar de esticar */
+.left-container .fc-daygrid-body,
+.fc-daygrid-day-top {
+  width: auto !important;
+}
+
+/* Cada célula terá 2em x 2em */
+.left-container .fc-daygrid-day {
+  width: 2em !important;
+  min-width: 2em !important;
+  max-width: 2em !important;
+
+  height: 2em !important;
+  min-height: 2em !important;
+  max-height: 2em !important;
+
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+/* Conteúdo interno seguindo o mesmo tamanho */
+.left-container .fc-daygrid-day-frame {
+  width: 2em !important;
+  height: 2em !important;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0 !important;
+  margin: 0 !important;
+  overflow: hidden;
+}
+
+/* Ajusta o número do dia */
+.left-container .fc-daygrid-day-number {
+  font-size: 0.75rem;
+  line-height: 2em;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* =============================== */
+/*  🔵 DIA SELECIONADO             */
+/* =============================== */
+.left-container .selected-day .fc-daygrid-day-frame {
+  background: #d1c4ff !important;
+  border-radius: 50%;
+}
+
+/* Cursor pointer */
+.left-container .fc-daygrid-day-frame {
+  cursor: pointer;
+}
