@@ -17,7 +17,7 @@
     padding: 1% 1.5%;
 }
 
-.main .index-container{
+.main .Button-para-configurações{
     width: 70vw;
     height: 100vh;
     margin: 0;
@@ -68,7 +68,7 @@ h2{
 }
 
 /* CALENDÁRIO PRINCIPAL – pega todo o resto da tela */
-.index-container {
+.Button-para-configurações {
   flex: 1; /* Expande automaticamente */
   background: white;
   padding: 30px;
@@ -79,7 +79,29 @@ h2{
 }
 
 /* Ajusta largura máxima do calendário */
-.index-container .fc {
+.Button-para-configurações .fc {
   width: 90%;          /* deixa ele grande */
   max-width: 1000px;   /* limite superior */
 }
+
+/* Permite posicionamento absoluto dentro do container */
+.Button-para-configurações {
+  position: relative;
+}
+
+/* Botão/avatar fixado no topo direito */
+.imagem-botao {
+  width: 55px;
+  cursor: pointer;
+  
+  position: absolute;
+  top: 20px;
+  right: 25px;
+
+  transition: transform 0.2s ease;
+}
+
+.imagem-botao:hover {
+  transform: scale(1.1);
+}
+
