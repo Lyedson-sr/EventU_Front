@@ -29,7 +29,7 @@ export function forgotPasswordRequest(email) {
 }
 
 export function activateAccountRequest(email, code) {
-    return httpClient('auth/activate-account/', {
+    return httpClient('/auth/activate-account/', {
       method: "POST",
       body: JSON.stringify({ email, code })
     });
