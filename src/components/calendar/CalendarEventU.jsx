@@ -3,38 +3,70 @@ import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
-
-import YearView from "./YearView.jsx";
+import multiMonthPlugin from "@fullcalendar/multimonth";
+import ptBrLocale from "@fullcalendar/core/locales/pt-br";
+import "./calendarEventu.css"
 
 export default function CalendarEventU() {
-  const [currentView, setCurrentView] = useState("dayGridMonth");
+  const [events, setEvents] = useState([]);
+
+  const handleDateClick = (info) => {
+    alert("Data clicada: " + info.dateStr);
+  };
 
   return (
     <div className="calendar-wrapper">
-
-      {/* 🔹 TOP BAR */}
-      <div className="calendar-header">
-        <h2><span>{"<"}</span> Outubro 2025 <span>{">"}</span></h2>
-
-        <div className="view-buttons">
-          <button onClick={() => setCurrentView("timeGridDay")}>DIA</button>
-          <button onClick={() => setCurrentView("timeGridWeek")}>SEMANA</button>
-          <button onClick={() => setCurrentView("dayGridMonth")}>MÊS</button>
-          <button onClick={() => setCurrentView("yearView")}>ANO</button>
-        </div>
-      </div>
-
-      {/* 🔹 RENDERIZAÇÃO */}
-      {currentView !== "yearView" ? (
+  <div style={{ padding: "20px" }}>
         <FullCalendar
-          plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
-          initialView={currentView}
-          height="auto"
-          headerToolbar={false}
+          plugins={[
+            dayGridPlugin,
+            timeGridPlugin,
+            interactionPlugin,
+            multiMonthPlugin,
+          ]}
+          locale={ptBrLocale} 
+          initialView="dayGridMonth"
+          height="80vh"
+          selectable={true}
+          dateClick={handleDateClick}
+          events={events}
+
+          headerToolbar={{
+            left: "prev,title,next",
+            center: "today",
+            right: "timeGridDay,timeGridWeek,dayGridMonth,multiMonthYear",
+          }}
+
+          titleFormat={(date) => {
+            const mes = date.date.marker.toLocaleDateString("pt-BR", {
+              month: "long",
+            });
+            const ano = date.date.marker.getFullYear();
+            const mesCapitalizado = mes.charAt(0).toUpperCase() + mes.slice(1);
+
+            return `${mesCapitalizado} de ${ano}`;
+          }}
+          contentHeight="80vh"
+
+          slotLabelFormat={{
+            hour: "2-digit",
+            minute: "2-digit",
+            hour12: false,
+          }}
+
+          views={{
+            timeGridDay: { buttonText: "Dia" },
+            timeGridWeek: { buttonText: "Semana" },
+            dayGridMonth: { buttonText: "Mês" },
+
+            // 📌 View anual
+            multiMonthYear: {
+              type: "multiMonthYear",
+              buttonText: "Ano",
+            },
+          }}
         />
-      ) : (
-        <YearView />
-      )}
+      </div>
     </div>
   );
 }
