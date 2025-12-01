@@ -25,7 +25,7 @@ function Home() {
           <NewEventU />
         </div>
 
-        <div className="mini-calendaio">
+        <div className="mini-calendario">
           <MiniCalendar />
         </div>
       </div>
