@@ -1,0 +1,275 @@
+/* Estilo do botão que abre o modal (NewEventU.jsx) */
+.button-novo-eventu-n {
+  /* Estilos específicos para o container do botão, se necessário */
+}
+
+.enter-btn-n {
+  padding: 10px 20px;
+  background: #2b2d42; 
+  color: white;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 15px;
+  transition: background 0.3s;
+}
+
+.enter-btn-n:hover {
+  background: #4a5068;
+}
+
+/* ---------------------------------------------------------------- */
+/* Estilos do Modal Novo EventU (NewEventUModal.jsx) */
+/* ---------------------------------------------------------------- */
+
+/* Fundo do modal */
+.modal-overlay-n {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+/* Caixa principal (Padding superior/inferior mínimo para economizar espaço) */
+.modal-container-n {
+  width: 650px; 
+  max-height: 90vh; 
+  overflow-y: auto;
+  background: white;
+  padding: 10px 25px 15px; /* **AJUSTE AQUI**: Padding lateral reduzido para 25px */
+  border-radius: 20px;
+  position: relative;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3); 
+}
+
+/* Botão fechar ('X' mais próximo ao topo) */
+.modal-close-btn-n {
+  position: absolute;
+  right: 15px; 
+  top: 5px; 
+  background: none;
+  border: none;
+  font-size: 30px; 
+  line-height: 1;
+  cursor: pointer;
+  color: #555; 
+  font-weight: 300;
+  transition: color 0.2s;
+}
+
+.modal-close-btn-n:hover {
+  color: #2b2d42;
+}
+
+/* Título do Modal ('Novo EventU' mais próximo ao topo) */
+.modal-title-n {
+  font-size: 30px;
+  font-weight: 700;
+  color: #2b2d42;
+  margin-bottom: 8px; /* **AJUSTE AQUI**: Margem inferior reduzida */
+  margin-top: 0px; 
+}
+
+/* Grid dos campos */
+.modal-grid-n {
+  display: grid;
+  grid-template-columns: 1fr 1fr; 
+  gap: 10px 20px; /* **AJUSTE AQUI**: Gap vertical e horizontal reduzido */
+}
+
+/* Campos */
+.field-n {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Campos Large (Ocupando as 2 colunas inteiras) */
+.field-n.large-n {
+  grid-column: span 2;
+}
+
+.field-n label {
+  font-weight: 600;
+  color: #2b2d42;
+  margin-bottom: 3px; 
+  font-size: 16px;
+}
+
+/* Estilo unificado para inputs, selects e textareas */
+.field-n input[type="text"],
+.field-n input[type="date"], 
+.field-n input[type="time"], 
+.field-n select,
+.field-n textarea {
+  padding: 8px 15px; 
+  border-radius: 8px;
+  border: 1px solid #ddd; 
+  font-size: 16px;
+  outline: none;
+  background-color: #f7f7f7; 
+  color: #333;
+  width: 100%; 
+  box-sizing: border-box; 
+  transition: border-color 0.2s, background-color 0.2s;
+}
+
+.field-n input:focus,
+.field-n select:focus,
+.field-n textarea:focus {
+  border-color: #74b3ff; 
+  background-color: white;
+}
+
+.field-n textarea {
+  resize: vertical; 
+  min-height: 45px; /* **AJUSTE AQUI**: Altura mínima do campo Descrição reduzida para 45px */
+}
+
+/* Estado de erro */
+.input-error-n {
+  border-color: #e63946 !important; 
+  background-color: #fffafa !important; 
+}
+
+.error-msg-n {
+  font-size: 13px;
+  color: #e63946; 
+  margin-top: 2px; 
+  font-weight: 500;
+}
+
+/* ------------------------------------------- */
+/* Estilização para Campo com Ícone (Data e Hora) */
+/* ------------------------------------------- */
+.input-with-icon-n {
+    position: relative;
+}
+
+.input-with-icon-n input[type="date"],
+.input-with-icon-n input[type="time"] {
+    padding-right: 40px; 
+}
+
+/* Esconde o seletor nativo do calendário/relógio em navegadores WebKit */
+.input-with-icon-n input[type="date"]::-webkit-calendar-picker-indicator,
+.input-with-icon-n input[type="time"]::-webkit-calendar-picker-indicator {
+    display: none;
+}
+
+/* Estilo do nosso ícone personalizado */
+.input-with-icon-n .icon-n {
+    position: absolute;
+    right: 15px;
+    top: 50%; 
+    transform: translateY(-50%); 
+    font-size: 20px; 
+    color: #2b2d42;
+    cursor: pointer; 
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    z-index: 2; 
+}
+
+/* ------------------------------------------- */
+/* Ajuste para o campo SELECT/Recorrência */
+/* ------------------------------------------- */
+.field-n select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-image: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" width="292.4" height="292.4" fill="%232b2d42"><path d="M287 69.4a17.6 17.6 0 0 0-13-5.4H18.4c-5 0-9.3 1.8-13 5.4C1.8 73 0 77.3 0 82.4s1.8 9.4 5.4 13l135.5 135.5c3.7 3.7 8 5.6 13 5.6s9.3-1.8 13-5.6L287 95.4c3.6-3.7 5.4-8 5.4-13s-1.8-9.4-5.4-13z"/></svg>');
+    background-repeat: no-repeat;
+    background-position: right 15px center; 
+    background-size: 10px; 
+    padding-right: 40px; 
+}
+
+/* Paleta de cores */
+.color-picker-n {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* **AJUSTE AQUI**: Gap entre as cores reduzido */
+}
+
+.color-n {
+  width: 30px; 
+  height: 30px; 
+  border-radius: 50%;
+  display: inline-block;
+  cursor: pointer;
+  border: 2px solid transparent; 
+  box-shadow: 0 0 0 1px #ccc; 
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.color-n:hover {
+  transform: scale(1.1);
+}
+
+.color-n.red-n { background: #e63946; }
+.color-n.gray-n { background: #d9d9d9; }
+.color-n.blue-n { background: #74b3ff; }
+.color-n.green-n { background: #2a9d8f; }
+
+.add-color-btn-n {
+  width: 30px; 
+  height: 30px; 
+  border-radius: 50%;
+  border: 2px dashed #2b2d42; 
+  background: white;
+  cursor: pointer;
+  font-size: 20px;
+  font-weight: bold;
+  color: #2b2d42;
+  line-height: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: background 0.2s;
+}
+
+.add-color-btn-n:hover {
+  background: #f1f1f1;
+}
+
+/* Rodapé (Espaçamento reduzido) */
+.modal-footer-n {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 15px; /* **AJUSTE AQUI**: Margem superior reduzida */
+  gap: 10px; /* **AJUSTE AQUI**: Gap entre os botões reduzido */
+}
+
+.cancel-btn-n,
+.create-btn-n {
+  padding: 6px 16px; /* **AJUSTE AQUI**: Padding dos botões reduzido para torná-los menores */
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 16px;
+  transition: opacity 0.2s, background 0.2s;
+}
+
+.cancel-btn-n {
+  background: #f1f1f1;
+  color: #555;
+}
+
+.cancel-btn-n:hover {
+  opacity: 0.8;
+}
+
+.create-btn-n {
+  background: #2b2d42;
+  color: white;
+}
+
+.create-btn-n:hover {
+  background: #4a5068;
+}

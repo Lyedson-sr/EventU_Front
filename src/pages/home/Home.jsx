@@ -3,7 +3,7 @@ import Logo from "../../assets/EventU-logo.png";
 import MiniCalendar from "../../components/calendar/MiniCalendar.jsx";
 import "./home.css";
 import CalendarEventU from "../../components/calendar/CalendarEventU.jsx";
-import NewEventU from "../../components/NewEventU.jsx";
+import NewEventU from "../../components/calendar/NewEventU.jsx";
 import UserPanel from "../../components/UserPanel.jsx";
 import avatar from "../../assets/Avatar.svg";
 import { useState } from "react";

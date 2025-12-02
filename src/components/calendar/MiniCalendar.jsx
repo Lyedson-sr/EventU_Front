@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
+import ptBrLocale from "@fullcalendar/core/locales/pt-br";
+
 import "./mini-calendar.css";
 export default function MyCalendar() {
   const [selectedDate, setSelectedDate] = useState(null);
@@ -25,6 +27,7 @@ export default function MyCalendar() {
           arg.dateStr === selectedDate ? ["selected-day"] : []
         }
         events={[]} 
+        locale={ptBrLocale}
       />
     </div>
   );

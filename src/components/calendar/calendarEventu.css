@@ -1,6 +1,9 @@
 .index-container{
   width: 80vw;
 }
+.fc-multimonth-title{
+  color: #1b2c48;
+}
 /* --- WRAPPER PRINCIPAL --- */
 .index-container .calendar-wrapper {
   width: 100%;
@@ -135,9 +138,14 @@
 .fc .fc-button-group > .fc-button {
     flex: 1 1 auto;
     position: relative;
-    width: 180px;
+    width: 150px;
 }
 
 .index-container .fc .fc-toolbar.fc-header-toolbar{
   padding-right: 90px;
+}
+
+.fc .fc-toolbar-title{
+  text-align: center;
+  text-transform: capitalize;
 }

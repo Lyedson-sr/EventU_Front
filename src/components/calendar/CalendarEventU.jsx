@@ -36,15 +36,9 @@ export default function CalendarEventU() {
             center: "today",
             right: "timeGridDay,timeGridWeek,dayGridMonth,multiMonthYear",
           }}
-
-          titleFormat={(date) => {
-            const mes = date.date.marker.toLocaleDateString("pt-BR", {
-              month: "long",
-            });
-            const ano = date.date.marker.getFullYear();
-            const mesCapitalizado = mes.charAt(0).toUpperCase() + mes.slice(1);
-
-            return `${mesCapitalizado} de ${ano}`;
+titleFormat={{
+            month: "long",
+            year: "numeric",
           }}
           contentHeight="80vh"
 
