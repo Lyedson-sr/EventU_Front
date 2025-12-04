@@ -6,8 +6,11 @@ import interactionPlugin from "@fullcalendar/interaction";
 import multiMonthPlugin from "@fullcalendar/multimonth";
 import ptBrLocale from "@fullcalendar/core/locales/pt-br";
 import "./calendarEventu.css"
+import DisplayEvent from "./DisplayEvent";
 
 export default function CalendarEventU({ events }) {
+  const [selectedEvent, setSelectedEvent] = useState(null);
+
 
   const handleDateClick = (info) => {
     console.log("Data clicada: " + info.dateStr);
@@ -16,8 +19,8 @@ export default function CalendarEventU({ events }) {
   };
 
   function verInfoEvent(info) {
-    console.log(info.event)
-    console.log(info.event.extendedProps);     // dados extras vindos da API
+    console.log(info.event.extendedProps)
+    setSelectedEvent(info.event); // guarda o evento clicado
   }
 
 
@@ -93,6 +96,13 @@ export default function CalendarEventU({ events }) {
             },
           }}
         />
+
+        {selectedEvent && (
+        <DisplayEvent
+          event={selectedEvent}
+          closeModal={() => setSelectedEvent(null)}
+        />
+      )}
       </div>
     </div>
   );

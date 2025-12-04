@@ -1,8 +1,8 @@
-import { httpClient } from "./httpClient";
+import { httpClient, httpClientAuth } from "./httpClient";
 
 export function createEventRequest(group, title, description, location, event_type, start_datetime, end_datetime, recurrence_rrule, recurrence_exceptions, color){
 
-    return httpClient("/events/",{
+    return httpClientAuth("/events/",{
         method: "POST",
         body: JSON.stringify({
             group, 
@@ -20,7 +20,7 @@ export function createEventRequest(group, title, description, location, event_ty
 }
 
 export function getAllEventsRequest(){
-    const eventos = httpClient("/events/",{
+    const eventos = httpClientAuth("/events/",{
         method: "GET",
     });
     

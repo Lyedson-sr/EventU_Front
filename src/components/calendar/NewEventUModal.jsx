@@ -1,83 +1,19 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
+import Field from "./Field";
 import "./newEventU.css";
 import { FaRegCalendarAlt, FaRegClock } from "react-icons/fa";
-import { createEvent, getAllEvents } from "../../service/eventService";
-
-// --- DEFINIÇÃO DO CAMPO (MOVIDO PARA FORA PARA CORRIGIR O FOCO) ---
-const Field = ({
-    label,
-    placeholder,
-    type = "text",
-    value,
-    onChange,
-    onBlur,
-    error,
-    errorMsg,
-    large = false,
-    icon = null,
-    children = null,
-    inputRef = null, 
-    handleIconClick = null, 
-  }) => {
-      return (
-        <div className={`field-n ${large ? "large-n" : ""}`}>
-            <label>{label}</label>
-            
-            {/* Estrutura para Data/Hora com ícone */}
-            {type === "date-icon" || type === "time-icon" ? (
-                <div className="input-with-icon-n">
-                    <input
-                        ref={inputRef} 
-                        type={type === "date-icon" ? "date" : "time"} 
-                        value={value}
-                        onChange={onChange}
-                        onBlur={onBlur}
-                        placeholder={placeholder}
-                        className={error ? "input-error-n" : ""}
-                    />
-                    <span className="icon-n" onClick={handleIconClick}> 
-                        {icon}
-                    </span>
-                </div>
-            ) : type === "select" ? (
-                <select value={value} onChange={onChange} className={error ? "input-error-n" : ""}>
-                    {children}
-                </select>
-            ) : type === "textarea" ? (
-                <textarea // Este é o componente usado pela Descrição
-                    placeholder={placeholder}
-                    value={value}
-                    onChange={onChange}
-                    onBlur={onBlur}
-                    className={error ? "input-error-n" : ""}
-                />
-            ) : (
-                <input
-                    type={type}
-                    placeholder={placeholder}
-                    value={value}
-                    onChange={onChange}
-                    onBlur={onBlur}
-                    className={error ? "input-error-n" : ""}
-                />
-            )}
-
-            {error && <span className="error-msg-n">{errorMsg}</span>}
-        </div>
-    );
-  };
+import { createEvent } from "../../service/eventService";
 
 function NewEventUModal({ closeModal }) {
-  // Estados para os campos
   const [title, setTitle] = useState("");
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
   const [reminderTime, setReminderTime] = useState("");
-  const [description, setDescription] = useState(""); // Novo estado para descrição
+  const [description, setDescription] = useState("");
   const [color, setColor] = useState("");
-  const [location, setLocation] = useState("")
-  const [typeEvent, setTypeEvent] = useState("")
-  const [recurrence, setRecurrence] = useState("")
+  const [location, setLocation] = useState("");
+  const [typeEvent, setTypeEvent] = useState("");
+  const [recurrence, setRecurrence] = useState("");
   
   const [touched, setTouched] = useState({
     title: false,
@@ -86,17 +22,14 @@ function NewEventUModal({ closeModal }) {
     reminderTime: false,
   });
 
-  // Refs para inputs de Data e Hora
   const dateInputRef = useRef(null); 
   const timeInputRef = useRef(null); 
 
-  // Funções de validação básica (mantidas)
   const isTitleValid = title.trim() !== "";
   const isDateValid = date !== "";
   const isTimeValid = time !== "";
   const isReminderValid = reminderTime !== ""; 
 
-  // Handlers para abrir o seletor nativo
   const handleDateIconClick = () => {
     if (dateInputRef.current && dateInputRef.current.showPicker) {
         dateInputRef.current.showPicker();
@@ -113,14 +46,12 @@ function NewEventUModal({ closeModal }) {
     }
   };
 
-
   const showTitleError = touched.title && !isTitleValid;
   const showDateError = touched.date && !isDateValid;
   const showTimeError = touched.time && !isTimeValid;
   const showReminderError = touched.reminderTime && !isReminderValid;
 
   const handleCreate = () => {
-    
     setTouched({ 
         title: true, 
         date: true, 
@@ -128,18 +59,17 @@ function NewEventUModal({ closeModal }) {
         reminderTime: true 
     });
 
-    if (isTitleValid && isDateValid && isTimeValid && isTimeValid && isReminderValid) {
+    if (isTitleValid && isDateValid && isTimeValid && isReminderValid) {
       alert("Evento Criado com sucesso! (Simulação)");
-      const start_datetime = `${date}T${time}:00.000Z`;
+      const start_datetime = `${date}T${time}:00-03:00`;
 
-      createEvent(title, description, location, typeEvent, start_datetime, start_datetime, recurrence, null, color)
+      createEvent(title, description, location, typeEvent, start_datetime, start_datetime, recurrence, null, color);
       
       closeModal();
     } else {
       console.log("Preencha os campos obrigatórios.");
     }
   };
-
   return (
     <div className="modal-overlay-n">
       <div className="modal-container-n">
