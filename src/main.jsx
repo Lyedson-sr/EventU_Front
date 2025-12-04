@@ -16,7 +16,6 @@ import { AuthProvider } from "./context/AuthContext";
 import Main from './pages/home/Home.jsx';
 
 createRoot(document.getElementById('root')).render(
-  <StrictMode>
     <AuthProvider>
       <BrowserRouter>
         <Routes>
@@ -35,5 +34,4 @@ createRoot(document.getElementById('root')).render(
         </Routes>
       </BrowserRouter>
     </AuthProvider>
-  </StrictMode>
 )

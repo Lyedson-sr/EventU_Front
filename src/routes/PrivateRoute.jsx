@@ -5,7 +5,6 @@ export default function PrivateRoute({ children }) {
   const { auth, loading } = useAuth();
 
   if (loading) {
-    console.log("Auth loading:", loading);
     return <div>Carregando...</div>;
   }
 
@@ -14,6 +13,5 @@ export default function PrivateRoute({ children }) {
     return <Navigate to="/login" replace />;
   }
 
-  console.log("Acesso concedido.");
   return children;
 }

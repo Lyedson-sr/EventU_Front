@@ -1,6 +1,7 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import "./newEventU.css";
 import { FaRegCalendarAlt, FaRegClock } from "react-icons/fa";
+import { createEvent, getAllEvents } from "../../service/eventService";
 
 // --- DEFINIÇÃO DO CAMPO (MOVIDO PARA FORA PARA CORRIGIR O FOCO) ---
 const Field = ({
@@ -18,7 +19,7 @@ const Field = ({
     inputRef = null, 
     handleIconClick = null, 
   }) => {
-    return (
+      return (
         <div className={`field-n ${large ? "large-n" : ""}`}>
             <label>{label}</label>
             
@@ -65,8 +66,6 @@ const Field = ({
         </div>
     );
   };
-// -----------------------------------------------------------------
-
 
 function NewEventUModal({ closeModal }) {
   // Estados para os campos
@@ -75,6 +74,10 @@ function NewEventUModal({ closeModal }) {
   const [time, setTime] = useState("");
   const [reminderTime, setReminderTime] = useState("");
   const [description, setDescription] = useState(""); // Novo estado para descrição
+  const [color, setColor] = useState("");
+  const [location, setLocation] = useState("")
+  const [typeEvent, setTypeEvent] = useState("")
+  const [recurrence, setRecurrence] = useState("")
   
   const [touched, setTouched] = useState({
     title: false,
@@ -117,6 +120,7 @@ function NewEventUModal({ closeModal }) {
   const showReminderError = touched.reminderTime && !isReminderValid;
 
   const handleCreate = () => {
+    
     setTouched({ 
         title: true, 
         date: true, 
@@ -126,6 +130,10 @@ function NewEventUModal({ closeModal }) {
 
     if (isTitleValid && isDateValid && isTimeValid && isTimeValid && isReminderValid) {
       alert("Evento Criado com sucesso! (Simulação)");
+      const start_datetime = `${date}T${time}:00.000Z`;
+
+      createEvent(title, description, location, typeEvent, start_datetime, start_datetime, recurrence, null, color)
+      
       closeModal();
     } else {
       console.log("Preencha os campos obrigatórios.");
@@ -192,14 +200,26 @@ function NewEventUModal({ closeModal }) {
           />
 
           {/* Tipo */}
-          <Field label="Tipo" type="select">
-            <option>Pessoal</option>
-            <option>Trabalho</option>
-            <option>Outro</option>
+          <Field 
+            label="Tipo" 
+            type="select"
+            value={typeEvent}
+            onChange={(e) => setTypeEvent(e.target.value)}
+          >
+            <option value="">Selecione...</option>
+            <option value="Pessoal">Pessoal</option>
+            <option value="Trabalho">Trabalho</option>
+            <option value="Outro">Outro</option>
           </Field>
 
+
           {/* Local */}
-          <Field label="Local" placeholder="Local do evento" />
+          <Field 
+            label="Local" 
+            placeholder="Local do evento" 
+            value={location} 
+            onChange={(e) => setLocation(e.target.value)}
+          />
 
           {/* Convidados (Ocupa as duas colunas) */}
           <Field
@@ -219,24 +239,27 @@ function NewEventUModal({ closeModal }) {
             errorMsg="Lembrete é obrigatório."
           />
 
-          {/* Recorrência */}
-          <Field label="Recorrência" type="select">
-            <option>Não se repete</option>
-            <option>Diariamente</option>
-            <option>Semanalmente</option>
-            <option>Mensalmente</option>
-            <option>Anualmente</option>
+          {/* Recorrência recurrence, setRecurrence */}
+          <Field label="Recorrência" type="select" value={recurrence} onChange={(e) => setRecurrence(e.target.value)}>
+            <option value="Não se repete">Não se repete</option>
+            <option value="Diariamente">Diariamente</option>
+            <option value="Semanalmente">Semanalmente</option>
+            <option value="Mensalmente">Mensalmente</option>
+            <option value="Anualmente">Anualmente</option>
           </Field>
 
           {/* Cor do evento (Ocupa as duas colunas) */}
           <div className="field-n color-field-n large-n"> 
             <label>Cor do evento</label>
             <div className="color-picker-n">
-              <span className="color-n red-n" />
-              <span className="color-n gray-n" />
-              <span className="color-n blue-n" />
-              <span className="color-n green-n" />
-              <button className="add-color-btn-n">+</button>
+              <button className="color-n red-n"   onClick={() => setColor("#e63946")}/>
+              <button className="color-n gray-n"  onClick={() => setColor("#d9d9d9")}/>
+              <button className="color-n blue-n"  onClick={() => setColor("#74b3ff")}/>
+              <button className="color-n green-n" onClick={() => setColor("#2a9d8f")}/>
+              <button className="add-color-btn-n">
+                +
+                <input type="color" className="color-picker" onChange={(e) => setColor(e.target.value)}/>
+              </button>
             </div>
           </div>
           
