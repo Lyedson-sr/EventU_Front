@@ -12,39 +12,51 @@ const Field = ({
     large = false,
     icon = null,
     children = null,
-    inputRef = null, 
-    handleIconClick = null, 
+    inputRef = null,
+    handleIconClick = null,
+    disabled = false, // ⬅️ NOVO
 }) => {
     return (
         <div className={`field-n ${large ? "large-n" : ""}`}>
             <label>{label}</label>
 
-            {/* Estrutura para Data/Hora com ícone */}
+            {/* DATE / TIME COM ÍCONE */}
             {type === "date-icon" || type === "time-icon" ? (
-                <div className="input-with-icon-n">
+                <div className={`input-with-icon-n ${disabled ? "disabled-n" : ""}`}>
                     <input
-                        ref={inputRef} 
-                        type={type === "date-icon" ? "date" : "time"} 
+                        ref={inputRef}
+                        type={type === "date-icon" ? "date" : "time"}
                         value={value}
                         onChange={onChange}
                         onBlur={onBlur}
                         placeholder={placeholder}
+                        disabled={disabled}             // ⬅️ AQUI
                         className={error ? "input-error-n" : ""}
                     />
-                    <span className="icon-n" onClick={handleIconClick}> 
+
+                    <span
+                        className={`icon-n ${disabled ? "icon-disabled-n" : ""}`}
+                        onClick={!disabled ? handleIconClick : undefined}   // ⬅️ Não clica quando desativado
+                    >
                         {icon}
                     </span>
                 </div>
             ) : type === "select" ? (
-                <select value={value} onChange={onChange} className={error ? "input-error-n" : ""}>
+                <select
+                    value={value}
+                    onChange={onChange}
+                    disabled={disabled}             // ⬅️ SELECT desativado
+                    className={error ? "input-error-n" : ""}
+                >
                     {children}
                 </select>
             ) : type === "textarea" ? (
-                <textarea // Este é o componente usado pela Descrição
+                <textarea
                     placeholder={placeholder}
                     value={value}
                     onChange={onChange}
                     onBlur={onBlur}
+                    disabled={disabled}             // ⬅️ TEXTAREA desativado
                     className={error ? "input-error-n" : ""}
                 />
             ) : (
@@ -54,6 +66,7 @@ const Field = ({
                     value={value}
                     onChange={onChange}
                     onBlur={onBlur}
+                    disabled={disabled}             // ⬅️ INPUT normal desativado
                     className={error ? "input-error-n" : ""}
                 />
             )}

@@ -1,7 +1,6 @@
 import { httpClient, httpClientAuth } from "./httpClient";
 
-export function createEventRequest(group, title, description, location, event_type, start_datetime, end_datetime, recurrence_rrule, recurrence_exceptions, color){
-
+export function createEventRequest(group, title, description, location, event_type, start_datetime, end_datetime, recurrence_rrule, recurrence_exceptions, color, guest_emails){
     return httpClientAuth("/events/",{
         method: "POST",
         body: JSON.stringify({
@@ -14,7 +13,8 @@ export function createEventRequest(group, title, description, location, event_ty
             end_datetime, 
             recurrence_rrule, 
             recurrence_exceptions, 
-            color            
+            color,
+            guest_emails
         })
     });
 }
@@ -26,3 +26,29 @@ export function getAllEventsRequest(){
     
     return eventos
 }
+
+export function deleteEventRequest(id) {
+    return httpClientAuth(`/events/${id}/`, {
+        method: "DELETE"
+    });
+}
+
+export function editEventRequest(id, title, description, location, event_type, start_datetime, end_datetime, recurrence_rrule, recurrence_exceptions, color, guest_emails){
+    console.log("Eviando")
+    return httpClientAuth(`/events/${id}/`,{
+        method: "PATCH",
+        body: JSON.stringify({
+            title, 
+            description, 
+            location, 
+            event_type, 
+            start_datetime, 
+            end_datetime, 
+            recurrence_rrule, 
+            recurrence_exceptions, 
+            color, 
+            guest_emails
+        })
+    });
+}
+

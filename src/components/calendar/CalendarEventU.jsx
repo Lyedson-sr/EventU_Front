@@ -19,7 +19,6 @@ export default function CalendarEventU({ events }) {
   };
 
   function verInfoEvent(info) {
-    console.log(info.event.extendedProps)
     setSelectedEvent(info.event); // guarda o evento clicado
   }
 
@@ -101,6 +100,8 @@ export default function CalendarEventU({ events }) {
         <DisplayEvent
           event={selectedEvent}
           closeModal={() => setSelectedEvent(null)}
+          onEdit={(updatedData) => suaFuncaoDeEditar(updatedData)}
+          onDelete={(ev) => suaFuncaoDeExcluir(ev)}
         />
       )}
       </div>

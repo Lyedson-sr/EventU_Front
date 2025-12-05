@@ -14,6 +14,7 @@ function NewEventUModal({ closeModal }) {
   const [location, setLocation] = useState("");
   const [typeEvent, setTypeEvent] = useState("");
   const [recurrence, setRecurrence] = useState("");
+  const [convidados, setConvidados] = useState("")
   
   const [touched, setTouched] = useState({
     title: false,
@@ -63,7 +64,13 @@ function NewEventUModal({ closeModal }) {
       alert("Evento Criado com sucesso! (Simulação)");
       const start_datetime = `${date}T${time}:00-03:00`;
 
-      createEvent(title, description, location, typeEvent, start_datetime, start_datetime, recurrence, null, color);
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      const convidadosList = convidados
+        .split(",")
+        .map(email => email.trim())
+        .filter(email => emailRegex.test(email));      
+      
+        createEvent(title, description, location, typeEvent, start_datetime, start_datetime, recurrence, null, color, convidadosList);
       
       closeModal();
     } else {
@@ -96,7 +103,6 @@ function NewEventUModal({ closeModal }) {
             type="textarea"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            // 'large' foi removido daqui para que fique lado a lado
           />
           
           {/* Data */}
@@ -156,6 +162,8 @@ function NewEventUModal({ closeModal }) {
             label="Convidados"
             placeholder="Emails separados por vírgula"
             large
+            value={convidados}
+            onChange={(e) => setConvidados(e.target.value)}
           />
           
           {/* Lembrete */}

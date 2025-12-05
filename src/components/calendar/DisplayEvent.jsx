@@ -1,10 +1,12 @@
 import { useState, useEffect, useRef } from "react";
 import Field from "./Field";
 import { FaRegCalendarAlt, FaRegClock } from "react-icons/fa";
+import { deleteEvent, editEvent } from "../../service/eventService";
 
 function DisplayEvent({ closeModal, event }) {
 
-  // Preenche os campos automaticamente com base no "event" recebido
+  const [isEditing, setIsEditing] = useState(false);
+
   const [title, setTitle] = useState("");
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
@@ -14,38 +16,78 @@ function DisplayEvent({ closeModal, event }) {
   const [location, setLocation] = useState("");
   const [typeEvent, setTypeEvent] = useState("");
   const [recurrence, setRecurrence] = useState("");
+  const [convidados, setConvidados] = useState("");
 
-  // Refs necessários para o Field de ícone
   const dateInputRef = useRef(null);
   const timeInputRef = useRef(null);
 
   const handleDateIconClick = () => {
-    dateInputRef.current?.showPicker?.() || dateInputRef.current?.focus();
+    if (isEditing) dateInputRef.current?.showPicker?.();
   };
 
   const handleTimeIconClick = () => {
-    timeInputRef.current?.showPicker?.() || timeInputRef.current?.focus();
+    if (isEditing) timeInputRef.current?.showPicker?.();
   };
 
-  // ⬇ Preenche os dados quando o modal abre
+  const deletedEvent = () => {
+    const response = deleteEvent(event.extendedProps.id);
+    if(response){
+        console.log("Deletado!!")
+    }
+    closeModal()
+    window.location.reload();
+
+  }
+  
+  async function handleEditEvent () {
+    
+
+    if (!isEditing) {
+        setIsEditing(true);  // habilita os campos
+    } else {
+        const start_datetime = `${date}T${time}:00-03:00`;
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        const convidadosList = convidados
+            .split(",")
+            .map(email => email.trim())
+            .filter(email => emailRegex.test(email));      
+
+
+        const response = await editEvent(event.extendedProps?.id ,title, description, location, typeEvent, start_datetime, start_datetime, recurrence, null, color, convidadosList)
+        if(response.ok){
+            setIsEditing(false);
+            closeModal()
+            window.location.reload();
+        
+        }else{
+            console.log("Deu ruim")
+        }
+        
+        setIsEditing(false);
+    }
+  }
   useEffect(() => {
     if (!event) return;
 
     setTitle(event.title || "");
     setDescription(event.extendedProps?.description || "");
     setLocation(event.extendedProps?.location || "");
-    setTypeEvent(event.extendedProps?.typeEvent || "");
+    
+    if(event.extendedProps?.event_type == "personal"){
+        setTypeEvent('personal');
+    }
+    
     setRecurrence(event.extendedProps?.recurrence || "");
     setColor(event.backgroundColor || event.extendedProps?.color || "");
 
-    // Data e hora do FullCalendar
     if (event.start) {
       const iso = event.start.toISOString();
-      setDate(iso.substring(0, 10));     // yyyy-mm-dd
-      setTime(iso.substring(11, 16));    // hh:mm
+      setDate(iso.substring(0, 10));
+      setTime(iso.substring(11, 16));
     }
 
     setReminderTime(event.extendedProps?.reminderTime || "");
+    setIsEditing(false);
 
   }, [event]);
 
@@ -62,12 +104,14 @@ function DisplayEvent({ closeModal, event }) {
           <Field
             label="Título"
             value={title}
+            disabled={!isEditing}
             onChange={(e) => setTitle(e.target.value)}
           />
 
           <Field
             label="Descrição"
             type="textarea"
+            disabled={!isEditing}
             value={description}
             onChange={(e) => setDescription(e.target.value)}
           />
@@ -76,6 +120,7 @@ function DisplayEvent({ closeModal, event }) {
             label="Data"
             type="date-icon"
             value={date}
+            disabled={!isEditing}
             onChange={(e) => setDate(e.target.value)}
             icon={<FaRegCalendarAlt />}
             inputRef={dateInputRef}
@@ -86,6 +131,7 @@ function DisplayEvent({ closeModal, event }) {
             label="Hora"
             type="time-icon"
             value={time}
+            disabled={!isEditing}
             onChange={(e) => setTime(e.target.value)}
             icon={<FaRegClock />}
             inputRef={timeInputRef}
@@ -95,6 +141,7 @@ function DisplayEvent({ closeModal, event }) {
           <Field 
             label="Tipo" 
             type="select"
+            disabled={!isEditing}
             value={typeEvent}
             onChange={(e) => setTypeEvent(e.target.value)}
           >
@@ -105,6 +152,7 @@ function DisplayEvent({ closeModal, event }) {
 
           <Field
             label="Local"
+            disabled={!isEditing}
             value={location}
             onChange={(e) => setLocation(e.target.value)}
           />
@@ -112,11 +160,15 @@ function DisplayEvent({ closeModal, event }) {
           <Field
             label="Convidados"
             placeholder="Emails separados por vírgula"
+            disabled={!isEditing}
             large
+            value={convidados}
+            onChange={(e) => setConvidados(e.target.value)}
           />
 
           <Field
             label="Lembrete"
+            disabled={!isEditing}
             value={reminderTime}
             onChange={(e) => setReminderTime(e.target.value)}
           />
@@ -124,8 +176,9 @@ function DisplayEvent({ closeModal, event }) {
           <Field 
             label="Recorrência" 
             type="select" 
+            disabled={!isEditing}
             value={recurrence}
-            onChange={(e) => setRecurrence(e.target.value)}
+            onChange={(e) => {setRecurrence(e.target.value); console.log("Acho que mudou")}}
           >
             <option value="Não se repete">Não se repete</option>
             <option value="Diariamente">Diariamente</option>
@@ -134,17 +187,18 @@ function DisplayEvent({ closeModal, event }) {
             <option value="Anualmente">Anualmente</option>
           </Field>
 
+          {/* COR DO EVENTO */}
           <div className="field-n color-field-n large-n">
             <label>Cor do evento</label>
 
-            <div className="color-picker-n">
-              <button className="color-n red-n"   onClick={() => setColor("#e63946")}/>
-              <button className="color-n gray-n"  onClick={() => setColor("#d9d9d9")}/>
-              <button className="color-n blue-n"  onClick={() => setColor("#74b3ff")}/>
-              <button className="color-n green-n" onClick={() => setColor("#2a9d8f")}/>
-              <button className="add-color-btn-n">
+            <div className={`color-picker-n ${!isEditing ? "disabled-n" : ""}`}>
+              <button className="color-n red-n"   disabled={!isEditing} onClick={() => setColor("#e63946")}/>
+              <button className="color-n gray-n"  disabled={!isEditing} onClick={() => setColor("#d9d9d9")}/>
+              <button className="color-n blue-n"  disabled={!isEditing} onClick={() => setColor("#74b3ff")}/>
+              <button className="color-n green-n" disabled={!isEditing} onClick={() => setColor("#2a9d8f")}/>
+              <button className="add-color-btn-n" disabled={!isEditing}>
                 +
-                <input type="color" className="color-picker" onChange={(e)=>setColor(e.target.value)}/>
+                <input type="color" disabled={!isEditing} className="color-picker" onChange={(e)=>setColor(e.target.value)}/>
               </button>
             </div>
           </div>
@@ -152,12 +206,23 @@ function DisplayEvent({ closeModal, event }) {
         </div>
 
         <div className="modal-footer-n">
-          <button className="cancel-btn-n" onClick={closeModal}>
-            Fechar
+
+          {/* EXCLUIR */}
+          <button 
+            className="cancel-btn-n"
+            onClick={deletedEvent}
+          >
+            Excluir
           </button>
-          <button className="create-btn-n">
-            Salvar alterações
+
+          {/* EDITAR */}
+          <button 
+            className="create-btn-n"
+            onClick={handleEditEvent}
+          >
+            {isEditing ? "Salvar" : "Editar"}
           </button>
+
         </div>
 
       </div>

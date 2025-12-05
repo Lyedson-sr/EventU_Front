@@ -1,7 +1,6 @@
 const baseURL = "http://localhost:8000/api/v1";
 
 export async function httpClientAuth(url, options = {}) {
-  console.log("Auth")
   const token = localStorage.getItem("access");
 
   const response = await fetch(baseURL + url, {
@@ -17,7 +16,6 @@ export async function httpClientAuth(url, options = {}) {
 }
 
 export async function httpClient(url, options = {}) {
-  console.log("No Auth")
   const response = await fetch(baseURL + url, {
     headers: {
       "Content-Type": "application/json",

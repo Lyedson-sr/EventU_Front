@@ -277,3 +277,15 @@
 .create-btn-n:hover {
   background: #4a5068;
 }
+
+input:disabled,
+textarea:disabled,
+select:disabled {
+  background-color: #f0f0f0 !important;
+  cursor: not-allowed !important;
+}
+
+.icon-disabled-n {
+  opacity: 0.3 !important;
+  pointer-events: none !important;
+}
