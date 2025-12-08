@@ -34,8 +34,8 @@ function DisplayEvent({ closeModal, event }) {
     if(response){
         console.log("Deletado!!")
     }
-    //closeModal()
-    //window.location.reload();
+    closeModal()
+    window.location.reload();
 
   }
   
@@ -58,8 +58,6 @@ function DisplayEvent({ closeModal, event }) {
             closeModal()
             window.location.reload();
         
-        }else{
-            console.log("Deu ruim")
         }
         
         setIsEditing(false);
@@ -67,8 +65,6 @@ function DisplayEvent({ closeModal, event }) {
   }
   useEffect(() => {
     if (!event) return;
-
-    console.log(event.extendedProps?.start_datetime)
 
     setTitle(event.title || "");
     setDescription(event.extendedProps?.description || "");
@@ -182,7 +178,7 @@ function DisplayEvent({ closeModal, event }) {
             type="select" 
             disabled={!isEditing}
             value={recurrence}
-            onChange={(e) => {setRecurrence(e.target.value); console.log("Acho que mudou")}}
+            onChange={(e) => {setRecurrence(e.target.value)}}
           >
             <option value="Não se repete">Não se repete</option>
             <option value="Diariamente">Diariamente</option>
