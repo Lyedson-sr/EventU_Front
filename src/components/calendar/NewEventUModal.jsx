@@ -52,7 +52,7 @@ function NewEventUModal({ closeModal }) {
   const showTimeError = touched.time && !isTimeValid;
   const showReminderError = touched.reminderTime && !isReminderValid;
 
-  const handleCreate = () => {
+  async function handleCreate(){
     setTouched({ 
         title: true, 
         date: true, 
@@ -61,7 +61,6 @@ function NewEventUModal({ closeModal }) {
     });
 
     if (isTitleValid && isDateValid && isTimeValid && isReminderValid) {
-      alert("Evento Criado com sucesso! (Simulação)");
       const start_datetime = `${date}T${time}:00-03:00`;
 
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -70,8 +69,12 @@ function NewEventUModal({ closeModal }) {
         .map(email => email.trim())
         .filter(email => emailRegex.test(email));      
       
-        createEvent(title, description, location, typeEvent, start_datetime, start_datetime, recurrence, null, color, convidadosList);
-      
+        const response = await createEvent(title, description, location, typeEvent, start_datetime, start_datetime, recurrence, null, color, convidadosList);
+        
+        console.log(response)
+        if(response.ok){
+          window.location.reload();
+        }
       closeModal();
     } else {
       console.log("Preencha os campos obrigatórios.");
@@ -144,8 +147,7 @@ function NewEventUModal({ closeModal }) {
           >
             <option value="">Selecione...</option>
             <option value="Pessoal">Pessoal</option>
-            <option value="Trabalho">Trabalho</option>
-            <option value="Outro">Outro</option>
+            <option value="Group">Grupo</option>
           </Field>
 
 

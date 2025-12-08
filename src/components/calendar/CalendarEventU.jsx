@@ -34,7 +34,6 @@ export default function CalendarEventU({ events }) {
       borderColor: evt.color,
       textColor: "#fff",
 
-      // 🔥 Aqui vão todos os dados originais
       extendedProps: {
         ...evt
       }

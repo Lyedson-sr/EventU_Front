@@ -16,7 +16,12 @@ export async function createEvent(title, description, location, event_type, star
         "Mensalmente": "RRULE:FREQ=MONTHLY",
         "Anualmente": "RRULE:FREQ=YEARLY"
     }; 
-    createEventRequest(group, title, description, location, event_type, start_datetime, end_datetime,rruleMap[recurrence_rrule], recurrence_exceptions, color, convidados)
+    const response = await createEventRequest(group, title, description, location, event_type, start_datetime, end_datetime,rruleMap[recurrence_rrule], recurrence_exceptions, color, convidados)
+    
+    if(response.ok){
+        return {ok:true}
+    }
+    return null
 }
 
 export async function getAllEvents(){
@@ -37,7 +42,7 @@ export async function deleteEvent(id){
     }
 }
 
-export async function editEvent(id, title, description, location, event_type, start_datetime, end_datetime, recurrence_rrule, recurrence_exceptions, color, convidados){
+export async function editEvent(id, title, description, location, event_type, date, time, recurrence_rrule, recurrence_exceptions, color, convidados){
     let group = null
     if(event_type != "Pessoal"){
         //Criar a logica depois 
@@ -45,6 +50,9 @@ export async function editEvent(id, title, description, location, event_type, st
     }else{
         event_type = "personal"
     }
+
+    const start_datetime = `${date}T${time}:00-03:00`;
+    const end_datetime = start_datetime;
 
     const rruleMap = {
         "Não se repete": null, 

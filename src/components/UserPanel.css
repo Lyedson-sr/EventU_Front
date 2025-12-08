@@ -20,26 +20,27 @@
   padding: 25px;
   overflow-y: auto;
   animation: slideIn 0.35s ease forwards;
+  font-family: 'Inter', sans-serif; /* Sugestão de fonte para ficar igual ao vídeo */
 }
 
 /* Animação */
 @keyframes slideIn {
-  from {
-    transform: translateX(100%);
-  }
-  to {
-    transform: translateX(0);
-  }
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
 }
 
 /* Header do usuário */
 .user-header {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 15px;
   margin-bottom: 25px;
 }
 
+.logout{
+  cursor: pointer !important;
+}
 .avatar-img {
   width: 55px;
 }
@@ -47,49 +48,182 @@
 .user-header h3 {
   margin: 0;
   font-size: 20px;
-  color: #1F2A44; /* nome */
+  color: #1F2A44;
 }
 
 .user-header p {
   margin: 0;
   font-size: 14px;
-  color: #6c757d; /* cargo */
+  color: #6c757d;
 }
 
-/* Seções com ícones */
+/* Seções (Botões Expansíveis) */
 .section {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin: 18px 0 10px;
+  gap: 15px;
+  padding: 12px 10px;
+  margin: 5px 0;
   cursor: pointer;
+  border-radius: 8px;
+  transition: background 0.2s;
 }
 
-/* cor dos ícones */
+.section:hover {
+  background-color: #f8f9fa;
+}
+
+/* Estado Ativo (Selecionado) */
+.section.active {
+  background-color: #EAEAEA;
+}
+
 .icon {
-  color: #454B60; /* cinza elegante */
+  color: #454B60;
 }
 
-/* ícone vermelho */
 .alert-icon {
   color: #E63946;
 }
 
-/* títulos das seções */
 .section h2 {
   font-size: 18px;
-  color: #2D3748; /* cinza escuro elegante */
+  color: #2D3748;
   font-weight: 600;
+  margin: 0;
 }
 
-/* notificações */
-.notifications {
-  margin-top: 15px;
+/* --- CONTEÚDO EXPANDIDO (Geral) --- */
+.section-content {
+  padding: 10px 10px 20px 10px; /* Indentado para alinhar com texto */
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* --- ESTILOS DE CONFIGURAÇÕES --- */
+.settings-content h3 {
+  font-size: 16px;
+  color: #1F2A44;
+  margin-bottom: 10px;
+  font-weight: 500;
+}
+
+.input-group {
+  margin-bottom: 15px;
+}
+
+.input-group label {
+  display: block;
+  font-size: 12px;
+  color: #6c757d;
+  margin-bottom: 5px;
+}
+
+.custom-select {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #ced4da;
+  border-radius: 6px;
+  background-color: #fff;
   font-size: 14px;
+  color: #495057;
+  outline: none;
+  cursor: pointer;
 }
 
-.highlight {
-  margin-top: 10px;
+.settings-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+  gap: 10px;
+}
+
+.settings-buttons button {
+  flex: 1;
+  padding: 10px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.btn-outline {
+  background: transparent;
+  border: 1px solid #6c757d;
+  color: #495057;
+}
+
+.btn-primary {
+  background: #343a40; /* Cor escura do vídeo */
+  border: none;
+  color: #fff;
+}
+
+/* --- ESTILOS DE NOTIFICAÇÕES --- */
+.notifications-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  padding-left: 7px !important; /* Remove recuo excessivo para notificações */
+}
+
+.notif-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.notif-text {
+  font-size: 14px;
+  color: #1F2A44;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.notif-item h4 {
+  margin: 0;
+  font-size: 15px;
+  color: #1F2A44;
+  font-weight: 700;
+}
+
+.notif-date {
+  font-size: 12px;
+  color: #6c757d;
+}
+
+.notif-alert {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 2px;
+}
+
+.red-badge {
+  background-color: transparent;
+  color: #E63946;
+  border: 1px solid #E63946;
+  border-radius: 50%;
+  width: 16px;
+  height: 16px;
+  font-size: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-weight: bold;
-  color: #1E40AF; /* azul forte */
+}
+
+.notif-alert span {
+  font-size: 12px;
+  color: #495057;
+}
+
+.user-info{
+  display: flex;
+  gap: 10px;
 }

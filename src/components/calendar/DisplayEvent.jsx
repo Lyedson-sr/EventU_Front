@@ -34,8 +34,8 @@ function DisplayEvent({ closeModal, event }) {
     if(response){
         console.log("Deletado!!")
     }
-    closeModal()
-    window.location.reload();
+    //closeModal()
+    //window.location.reload();
 
   }
   
@@ -45,7 +45,6 @@ function DisplayEvent({ closeModal, event }) {
     if (!isEditing) {
         setIsEditing(true);  // habilita os campos
     } else {
-        const start_datetime = `${date}T${time}:00-03:00`;
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         const convidadosList = convidados
             .split(",")
@@ -53,7 +52,7 @@ function DisplayEvent({ closeModal, event }) {
             .filter(email => emailRegex.test(email));      
 
 
-        const response = await editEvent(event.extendedProps?.id ,title, description, location, typeEvent, start_datetime, start_datetime, recurrence, null, color, convidadosList)
+        const response = await editEvent(event.extendedProps?.id ,title, description, location, typeEvent, date, time, recurrence, null, color, convidadosList)
         if(response.ok){
             setIsEditing(false);
             closeModal()
@@ -69,6 +68,8 @@ function DisplayEvent({ closeModal, event }) {
   useEffect(() => {
     if (!event) return;
 
+    console.log(event.extendedProps?.start_datetime)
+
     setTitle(event.title || "");
     setDescription(event.extendedProps?.description || "");
     setLocation(event.extendedProps?.location || "");
@@ -80,10 +81,14 @@ function DisplayEvent({ closeModal, event }) {
     setRecurrence(event.extendedProps?.recurrence || "");
     setColor(event.backgroundColor || event.extendedProps?.color || "");
 
-    if (event.start) {
-      const iso = event.start.toISOString();
-      setDate(iso.substring(0, 10));
-      setTime(iso.substring(11, 16));
+    if (event.extendedProps?.start_datetime) {
+      const iso = event.extendedProps.start_datetime; 
+
+      // remove o timezone (-03:00)
+      const clean = iso.replace(/([-+]\d{2}:\d{2})$/, "");
+
+      setDate(clean.substring(0, 10));        // "2026-02-02"
+      setTime(clean.substring(11, 16));       // "21:00"
     }
 
     setReminderTime(event.extendedProps?.reminderTime || "");
@@ -146,8 +151,7 @@ function DisplayEvent({ closeModal, event }) {
             onChange={(e) => setTypeEvent(e.target.value)}
           >
             <option value="Pessoal">Pessoal</option>
-            <option value="Trabalho">Trabalho</option>
-            <option value="Outro">Outro</option>
+            <option value="Group">Grupo</option>
           </Field>
 
           <Field
