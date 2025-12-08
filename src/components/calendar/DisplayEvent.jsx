@@ -166,12 +166,22 @@ function DisplayEvent({ closeModal, event }) {
             onChange={(e) => setConvidados(e.target.value)}
           />
 
-          <Field
-            label="Lembrete"
+          {/* LEMBRETE - DROPDOWN */}
+          <Field 
+            label="Lembrete" 
+            type="select"
             disabled={!isEditing}
             value={reminderTime}
             onChange={(e) => setReminderTime(e.target.value)}
-          />
+          >
+            <option value="">Sem lembrete</option>
+            <option value="5">5 minutos antes</option>
+            <option value="10">10 minutos antes</option>
+            <option value="15">15 minutos antes</option>
+            <option value="30">30 minutos antes</option>
+            <option value="60">1 hora antes</option>
+            <option value="1440">1 dia antes</option>
+          </Field>
 
           <Field 
             label="Recorrência" 

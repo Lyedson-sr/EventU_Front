@@ -152,4 +152,80 @@
 
 .fc-daygrid-event-harness{
   cursor: pointer;
+}/* Substitua a parte do .add-color-btn-n no seu CSS */
+
+/* Botão de adicionar cor personalizada */
+.add-color-btn-n {
+  width: 30px !important;
+  height: 30px !important;
+  border-radius: 50% !important;
+  background-color: #f0f0f0 !important;
+  border: 2px solid #ddd !important; /* Mudei de dashed para solid para combinar */
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  position: relative !important;
+  font-size: 18px !important;
+  color: #666 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  box-sizing: border-box !important;
+  transition: all 0.2s !important;
+  flex-shrink: 0 !important; /* Impede que diminua */
+}
+
+/* Hover igual aos outros botões */
+.add-color-btn-n:hover:not(:disabled) {
+  background-color: #e0e0e0 !important;
+  transform: scale(1.1) !important;
+}
+
+.add-color-btn-n:disabled {
+  cursor: not-allowed !important;
+  opacity: 0.6 !important;
+}
+
+/* Input de color picker */
+.add-color-btn-n input.color-picker {
+  position: absolute !important;
+  width: 100% !important;
+  height: 100% !important;
+  top: 0 !important;
+  left: 0 !important;
+  opacity: 0 !important;
+  cursor: pointer !important;
+  z-index: 2 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: none !important;
+}
+
+/* Garantir que todos os botões tenham exatamente o mesmo estilo base */
+.color-n, .add-color-btn-n {
+  width: 30px !important;
+  height: 30px !important;
+  min-width: 30px !important;
+  min-height: 30px !important;
+  max-width: 30px !important;
+  max-height: 30px !important;
+  border-radius: 50% !important;
+  border: 2px solid #ddd !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+  flex-shrink: 0 !important;
+  box-sizing: border-box !important;
+}
+
+/* Container dos botões de cor */
+.color-picker-n {
+  display: flex !important;
+  gap: 10px !important;
+  align-items: center !important;
+  flex-wrap: nowrap !important;
 }
