@@ -17,7 +17,7 @@ function Home() {
     const [openPanel, setOpenPanel] = useState(false);
 
     const [eventos, setEventos] = useState([]);
-    const [grupos, setGrupos] = useState([]); // Estado para os grupos
+    const [grupos, setGrupos] = useState([]); // Estado central para os grupos
 
     useEffect(() => {
         loadEvents();
@@ -34,18 +34,73 @@ function Home() {
         }
     }
 
-    // Função de carregamento de grupos 
+    // LISTAR GRUPOS (GET /api/v1/groups/)
     async function loadGroups() {
         try {
-            // ** AQUI ESTÃO OS DADOS SIMULADOS PARA EVITAR O ERRO DE IMPORTAÇÃO **
+            // DADOS SIMULADOS INICIAIS, adaptados para o formato que suporta cor e membros
             setGrupos([
-                { id: 1, name: "Grupo de Trabalho A" },
-                { id: 2, name: "Fim de Semana Futebol" },
-                { id: 3, name: "Reunião Diretoria" },
+                { id: 1, name: "Grupo de Trabalho A", color: '#00D1B2', description: "Trabalhos e estudos.", members: ["a@mail.com"] },
+                { id: 2, name: "Fim de Semana Futebol", color: '#EE1515', description: "Jogos de sábado.", members: ["b@mail.com", "c@mail.com"] },
+                { id: 3, name: "Reunião Diretoria", color: '#4A90E2', description: "Reuniões administrativas.", members: ["d@mail.com"] },
             ]);
         } catch (error) {
             console.error("Erro ao carregar grupos (simulação falhou):", error);
             setGrupos([]);
+        }
+    }
+
+    // 1. ➕ CRIAR GRUPO (POST /api/v1/groups/)
+    async function handleAddGroup(newGroupData) {
+        try {
+            // ** CHAMADA REAL À API: Ex: const response = await createGroup(newGroupData); **
+            
+            // SIMULAÇÃO: Gera ID e cor
+            const newId = grupos.length > 0 ? Math.max(...grupos.map(g => g.id)) + 1 : 1;
+            const corAleatoria = ['#f59e0b', '#10b981', '#3b82f6'][Math.floor(Math.random() * 3)];
+            
+            const novoGrupoFinal = {
+                id: newId, 
+                color: corAleatoria, 
+                ...newGroupData
+            };
+
+            setGrupos(prevGrupos => [...prevGrupos, novoGrupoFinal]);
+            console.log("Grupo Criado:", novoGrupoFinal);
+            
+        } catch (error) {
+            console.error("Erro ao criar grupo:", error);
+        }
+    }
+    
+    // 2. ✏️ EDITAR GRUPO (PATCH /api/v1/groups/{id})
+    async function handleEditGroup(groupId, updatedData) {
+        try {
+            // ** CHAMADA REAL À API: Ex: await updateGroup(groupId, updatedData); **
+            
+            // Atualiza o estado: Mapeia e substitui o grupo
+            setGrupos(prevGrupos => prevGrupos.map(group => 
+                group.id === groupId 
+                    ? { ...group, ...updatedData } 
+                    : group
+            ));
+            console.log(`Grupo ID ${groupId} editado com sucesso.`, updatedData);
+            
+        } catch (error) {
+            console.error("Erro ao editar grupo:", error);
+        }
+    }
+
+
+    // 3. ❌ EXCLUIR GRUPO (DELETE /api/v1/groups/{id})
+    async function handleDeleteGroup(groupId) {
+        try {
+            // ** CHAMADA REAL À API: Ex: await deleteGroup(groupId); **
+
+            // Atualiza o estado: Remove o grupo com o ID fornecido
+            setGrupos(prevGrupos => prevGrupos.filter(g => g.id !== groupId));
+            console.log(`Grupo ID ${groupId} excluído.`);
+        } catch (error) {
+            console.error("Erro ao excluir grupo:", error);
         }
     }
 
@@ -65,8 +120,13 @@ function Home() {
                     <MiniCalendar />
                 </div>
 
-                {/* Renderiza a seção de grupos com os dados simulados */}
-                <MyGroupsSection groups={grupos} /> 
+                {/* PASSA TODAS AS PROPS DE GRUPO PARA O MyGroupsSection */}
+                <MyGroupsSection 
+                    groups={grupos} 
+                    onGroupCreated={handleAddGroup} 
+                    onGroupEdited={handleEditGroup} 
+                    onGroupDeleted={handleDeleteGroup} 
+                />  
 
             </div>
 
