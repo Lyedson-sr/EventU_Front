@@ -29,9 +29,9 @@ function DisplayEvent({ closeModal, event }) {
     if (isEditing) timeInputRef.current?.showPicker?.();
   };
 
-  const deletedEvent = () => {
-    const response = deleteEvent(event.extendedProps.id);
-    if(response){
+  async function deletedEvent (){
+    const response = await deleteEvent(event.extendedProps.id);
+    if(response.ok){
         console.log("Deletado!!")
     }
     closeModal()

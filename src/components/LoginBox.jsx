@@ -14,6 +14,8 @@ function LoginBox() {
   const [userType, setUserType] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
+  const [loading, setLoading] = useState(false); 
+
   const navigate = useNavigate();
 
 
@@ -33,9 +35,9 @@ function LoginBox() {
         text: "Por favor, selecione um tipo de usuário para continuar.",
       });
     }
-    
+    setLoading(true)
     const result = await efetuarLogin(email, password, userType);
-    
+    setLoading(false)
     if (result.ok) {
 
       const { data, tokens } = result;
@@ -96,7 +98,14 @@ function LoginBox() {
         </div>
 
         <Link to="">
-          <button className="enter-btn" onClick={handleLogin}><input type="submit" /> Entrar</button>
+          <button 
+            className="enter-btn" 
+            onClick={handleLogin} 
+            disabled={loading} 
+            style={{ opacity: loading ? 0.7 : 1, cursor: loading ? 'not-allowed' : 'pointer' }}
+            >
+                <input type="submit" /> Entrar
+          </button>
         </Link>
       </form>
     

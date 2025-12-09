@@ -68,29 +68,13 @@ function NewEventUModal({ closeModal }) {
         .split(",")
         .map(email => email.trim())
         .filter(email => emailRegex.test(email));      
-
-      // Dispara o POST mas não espera a resposta resolver
-      createEvent(
-        title,
-        description,
-        location,
-        typeEvent,
-        start_datetime,
-        start_datetime,
-        recurrence,
-        null,
-        color,
-        convidadosList
-      ).catch(() => {});  
-      // mesmo se der erro não vai travar
-
-      closeModal();
-
-      // força reload após 300ms para dar tempo do backend salvar
-      setTimeout(() => {
+      
+      const response = await createEvent(title, description, location, typeEvent, start_datetime, start_datetime, recurrence, null, color, convidadosList);
+      
+      console.log(response)
+      if(response.ok){
         window.location.reload();
-      }, 300);
-
+      }
     } else {
       console.log("Preencha os campos obrigatórios.");
     }
