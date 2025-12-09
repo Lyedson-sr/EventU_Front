@@ -1,0 +1,217 @@
+/* ---------------------------------------------------------------- */
+/* Estilos do Modal Novo Grupo (NewGroupModal.jsx) - Baseado em newEventU.css */
+/* ---------------------------------------------------------------- */
+
+/* Fundo do modal (Mantém a sobreposição escura) */
+.modal-overlay-group {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+/* Caixa principal (Baseado na imagem: menor e com fundo lavanda) */
+.modal-container-group {
+  width: 90%;
+  max-width: 450px; /* Largura menor para o formulário de grupo */
+  max-height: 90vh; 
+  overflow-y: auto;
+  background: #ffffff !important; /* Fundo lavanda suave conforme a imagem */
+  padding: 30px 30px 25px; 
+  border-radius: 20px;
+  position: relative;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3); 
+  border: 1px solid #ffffff; /* Borda suave da cor de fundo */
+}
+
+/* Botão fechar (Removido da imagem, mas se fosse incluído) */
+.modal-close-btn-group {
+  position: absolute;
+  right: 15px; 
+  top: 5px; 
+  background: none;
+  border: none;
+  font-size: 30px; 
+  line-height: 1;
+  cursor: pointer;
+  color: #555; 
+  font-weight: 300;
+  transition: color 0.2s;
+}
+
+.modal-close-btn-group:hover {
+  color: #2b2d42;
+}
+
+/* Título do Modal ('Novo Grupo') */
+.modal-title-group {
+  font-size: 30px;
+  font-weight: 700;
+  color: #2b2d42;
+  margin-bottom: 25px; /* Margem maior para separar do formulário */
+  margin-top: 0px; 
+  text-align: center;
+}
+
+/* Container dos campos (Layout de lista vertical simples) */
+.modal-content-group {
+  display: flex;
+  flex-direction: column;
+  gap: 20px; /* Espaço entre os campos */
+}
+
+/* Campos (Herda Field-n e Large-n) */
+.field-n {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Campos Large (Ocupando a largura total) */
+.field-n.large-n {
+  width: 100%;
+}
+
+.field-n label {
+  font-weight: 600;
+  color: #2b2d42;
+  margin-bottom: 5px; 
+  font-size: 16px;
+}
+
+/* Estilo unificado para inputs e textareas */
+.field-n input[type="text"],
+.field-n input[type="search"], 
+.field-n textarea {
+  padding: 10px 15px; /* Padding ligeiramente maior */
+  border-radius: 8px;
+  border: 1px solid #ddd; 
+  font-size: 16px;
+  outline: none;
+  background-color: white; /* Fundo branco para contrastar com o modal */
+  color: #333;
+  width: 100%; 
+  box-sizing: border-box; 
+  transition: border-color 0.2s, background-color 0.2s;
+}
+
+.field-n input:focus,
+.field-n textarea:focus {
+  border-color: #74b3ff; 
+  background-color: white;
+}
+
+/* Estado de erro */
+.input-error-n {
+  border-color: #e63946 !important; 
+  background-color: #fffafa !important; 
+}
+
+.error-msg-n {
+  font-size: 13px;
+  color: #e63946; 
+  margin-top: 2px; 
+  font-weight: 500;
+}
+
+/* ------------------------------------------- */
+/* Estilização para Campo Convidados (Search/Ícone de Lupa) */
+/* ------------------------------------------- */
+.input-icon-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.input-icon-wrapper input[type="search"] {
+    padding-right: 40px; 
+}
+
+/* Estilo do ícone de busca (Lupa) */
+.input-icon-wrapper .input-icon-right {
+    position: absolute;
+    right: 15px;
+    top: 50%; 
+    transform: translateY(-50%); 
+    font-size: 18px; 
+    color: #555; /* Cor um pouco mais clara para a lupa */
+    pointer-events: none; /* Não interfere no clique do input */
+}
+
+/* ------------------------------------------- */
+/* Estilização para Rich Text Editor (Descrição) */
+/* ------------------------------------------- */
+.rich-text-editor-simulated textarea {
+    min-height: 100px; /* Altura maior para a descrição */
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    border-bottom: none;
+}
+
+.rich-text-editor-simulated .editor-toolbar {
+    display: flex;
+    gap: 8px;
+    padding: 8px 15px;
+    background: #e9e9e9; /* Fundo cinza da toolbar */
+    border: 1px solid #ddd;
+    border-top: none;
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+}
+
+.rich-text-editor-simulated .editor-toolbar button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #2b2d42;
+    font-size: 15px;
+    padding: 2px 4px;
+    transition: background 0.2s;
+}
+.rich-text-editor-simulated .editor-toolbar button:hover {
+    background: #d4d4d4;
+    border-radius: 4px;
+}
+
+
+/* ------------------------------------------- */
+/* Rodapé e Botões (Cores e tamanhos ajustados para o modal de grupo) */
+/* ------------------------------------------- */
+.modal-footer-group {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 30px; /* Margem superior generosa */
+  gap: 12px;
+}
+
+.cancel-btn-group,
+.create-btn-group {
+  padding: 8px 18px; /* Padding ajustado */
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 16px;
+  transition: opacity 0.2s, background 0.2s;
+}
+
+/* Botão Cancelar (Cor clara/secundária) */
+.cancel-btn-group {
+  background: #d9d9d9; /* Cinza claro */
+  color: #333;
+}
+
+.cancel-btn-group:hover {
+  background: #c7c7c7;
+}
+
+/* Botão Criar Grupo (Cor escura/primária, baseado na imagem) */
+.create-btn-group {
+  background: #4a5568; /* Cinza escuro conforme a imagem */
+  color: white;
+}
+
+.create-btn-group:hover {
+  background: #2d3748;
+}
