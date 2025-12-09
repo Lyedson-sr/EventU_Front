@@ -52,3 +52,10 @@ export function editEventRequest(id, title, description, location, event_type, s
     });
 }
 
+export function getOccurrencesResquest(startStr, endStr){
+    const query = `?start=${encodeURIComponent(startStr)}&end=${encodeURIComponent(endStr)}`;
+
+    return httpClientAuth("/events/occurrences/" +query,{
+        method: "GET"
+    })
+}

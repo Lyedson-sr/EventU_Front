@@ -1,4 +1,4 @@
-import { createEventRequest, getAllEventsRequest, deleteEventRequest, editEventRequest } from "../api/eventeApi";
+import { createEventRequest, getAllEventsRequest, deleteEventRequest, editEventRequest, getOccurrencesResquest } from "../api/eventeApi";
 
 export async function createEvent(title, description, location, event_type, start_datetime, end_datetime, recurrence_rrule, recurrence_exceptions, color, convidados) {
     let group = null
@@ -29,7 +29,11 @@ export async function getAllEvents(){
     const responseData = await response.json()
 
     if(response.ok){
-        return responseData
+        return responseData.results.reduce((acc, item) => {
+            acc[item.id] = item;
+            return acc;
+        }, {});
+
     }
     return null;
 }
@@ -61,11 +65,18 @@ export async function editEvent(id, title, description, location, event_type, da
         "Mensalmente": "RRULE:FREQ=MONTHLY",
         "Anualmente": "RRULE:FREQ=YEARLY"
     }; 
-
     const response = await editEventRequest(id, title, description, location, event_type, start_datetime, end_datetime, rruleMap[recurrence_rrule], recurrence_exceptions, color, convidados)
 
     if(response.ok){
         return {ok:true}
     }
     return null;
+}
+
+export async function getOccurrences(startStr, endStr){
+    const response = await getOccurrencesResquest(startStr, endStr);
+
+    if(response.ok){
+        return await response.json()
+    }
 }

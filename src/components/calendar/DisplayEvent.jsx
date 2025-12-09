@@ -30,7 +30,7 @@ function DisplayEvent({ closeModal, event }) {
   };
 
   async function deletedEvent (){
-    const response = await deleteEvent(event.extendedProps.id);
+    const response = await deleteEvent(event.id);
     if(response.ok){
         console.log("Deletado!!")
     }
@@ -52,7 +52,7 @@ function DisplayEvent({ closeModal, event }) {
             .filter(email => emailRegex.test(email));      
 
 
-        const response = await editEvent(event.extendedProps?.id ,title, description, location, typeEvent, date, time, recurrence, null, color, convidadosList)
+        const response = await editEvent(event.id ,title, description, location, typeEvent, date, time, recurrence, null, color, convidadosList)
         if(response.ok){
             setIsEditing(false);
             closeModal()
@@ -66,19 +66,28 @@ function DisplayEvent({ closeModal, event }) {
   useEffect(() => {
     if (!event) return;
 
+
     setTitle(event.title || "");
-    setDescription(event.extendedProps?.description || "");
-    setLocation(event.extendedProps?.location || "");
+    setDescription(event.description || "");
+    setLocation(event.location || "");
     
-    if(event.extendedProps?.event_type == "personal"){
+    if(event.event_type == "personal"){
         setTypeEvent('personal');
     }
     
-    setRecurrence(event.extendedProps?.recurrence || "");
-    setColor(event.backgroundColor || event.extendedProps?.color || "");
+    
+    
+    const rruleMap = {
+        "RRULE:FREQ=DAILY": "Diariamente",
+        "RRULE:FREQ=WEEKLY": "Semanalmente",
+        "RRULE:FREQ=MONTHLY": "Mensalmente",
+        "RRULE:FREQ=YEARLY": "Anualmente"
+    }; 
+    setRecurrence(rruleMap[event.recurrence_rrule] || "");
+    setColor(event.backgroundColor || event.color || "");
 
-    if (event.extendedProps?.start_datetime) {
-      const iso = event.extendedProps.start_datetime; 
+    if (event.start_datetime) {
+      const iso = event.start_datetime; 
 
       // remove o timezone (-03:00)
       const clean = iso.replace(/([-+]\d{2}:\d{2})$/, "");
@@ -87,7 +96,7 @@ function DisplayEvent({ closeModal, event }) {
       setTime(clean.substring(11, 16));       // "21:00"
     }
 
-    setReminderTime(event.extendedProps?.reminderTime || "");
+    setReminderTime(event.reminderTime || "");
     setIsEditing(false);
 
   }, [event]);
