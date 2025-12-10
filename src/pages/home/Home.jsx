@@ -6,13 +6,29 @@ import CalendarEventU from "../../components/calendar/CalendarEventU.jsx";
 import NewEventU from "../../components/calendar/NewEventU.jsx";
 import UserPanel from "../../components/UserPanel.jsx";
 import avatar from "../../assets/Avatar.svg";
-import { useState } from "react";
-
+import { useState, useEffect } from "react";
+import { getAllEvents } from "../../service/eventService.js";
 function Home() {
   const { auth, setAuth } = useAuth();
   const [openPanel, setOpenPanel] = useState(false);
 
-  
+  const [eventos, setEventos] = useState([]);
+
+  useEffect(() => {
+    loadEvents();
+  }, []);
+
+  async function loadEvents() {
+    try {
+      const resp = await getAllEvents();
+
+      setEventos(resp.results || []);
+    } catch (error) {
+      console.error("Erro ao carregar eventos:", error);
+      setEventos([]); 
+    }
+  }
+
   return (
     <div className="main">
       <div className="left-container">
@@ -30,19 +46,19 @@ function Home() {
         </div>
       </div>
 
-    <div className="index-container">
-      
-      <img 
-        src={avatar}
-        alt="Avatar"
-        className="imagem-botao"
-        onClick={() => setOpenPanel(true)}
-      />
+      <div className="index-container">
+        <img 
+          src={avatar}
+          alt="Avatar"
+          className="imagem-botao"
+          onClick={() => setOpenPanel(true)}
+        />
 
-      <CalendarEventU />
+        {/* 🔥 agora SEM ERROS */}
+        <CalendarEventU events={eventos} />
 
-      {openPanel && <UserPanel onClose={() => setOpenPanel(false)} />}
-    </div>
+        {openPanel && <UserPanel onClose={() => setOpenPanel(false)} />}
+      </div>
     </div>
   );
 }

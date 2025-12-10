@@ -149,3 +149,7 @@
   text-align: center;
   text-transform: capitalize;
 }
+
+.fc-daygrid-event-harness{
+  cursor: pointer;
+}

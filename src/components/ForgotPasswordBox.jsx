@@ -7,6 +7,7 @@ import { forgotPassword } from "../service/authService";
 function ForgotPassword() {
   const [email, setEmail] = useState("");
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false); 
 
   const emailVeridication = async () => {
     const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
@@ -18,8 +19,9 @@ function ForgotPassword() {
       });
       return; 
     }
-
+    setLoading(true)
     const response = await forgotPassword(email);
+    setLoading(false)
 
     if (response.ok) {
       navigate("/email-verification", {
@@ -45,7 +47,12 @@ function ForgotPassword() {
             <button type="button" className="cancelar">Cancelar</button>
           </Link>
           <a>
-            <button onClick={emailVeridication} type="button" className="proximo" >Proximo</button>
+            <button 
+              onClick={emailVeridication} 
+              type="button" 
+              className="proximo"
+              disabled={loading} 
+              style={{ opacity: loading ? 0.7 : 1, cursor: loading ? 'not-allowed' : 'pointer' }} >Proximo</button>
           </a>
         </div>
     </div>

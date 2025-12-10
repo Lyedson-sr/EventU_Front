@@ -1,7 +1,3 @@
-/* Estilo do botão que abre o modal (NewEventU.jsx) */
-.button-novo-eventu-n {
-  /* Estilos específicos para o container do botão, se necessário */
-}
 
 .enter-btn-n {
   padding: 10px 20px;
@@ -216,14 +212,20 @@
 .color-n.blue-n { background: #74b3ff; }
 .color-n.green-n { background: #2a9d8f; }
 
+.color-picker {
+  position: absolute;
+  inset: 0;       /* ocupa todo o botão */
+  opacity: 0;     /* invisível */
+  cursor: pointer;
+}
+
 .add-color-btn-n {
-  width: 30px; 
-  height: 30px; 
+  width: 37px;
+  height: 37px;
   border-radius: 50%;
   border: 2px dashed #2b2d42; 
   background: white;
   cursor: pointer;
-  font-size: 20px;
   font-weight: bold;
   color: #2b2d42;
   line-height: 1;
@@ -231,6 +233,8 @@
   justify-content: center;
   align-items: center;
   transition: background 0.2s;
+  position: relative;
+  overflow: hidden;
 }
 
 .add-color-btn-n:hover {
@@ -272,4 +276,16 @@
 
 .create-btn-n:hover {
   background: #4a5068;
+}
+
+input:disabled,
+textarea:disabled,
+select:disabled {
+  background-color: #f0f0f0 !important;
+  cursor: not-allowed !important;
+}
+
+.icon-disabled-n {
+  opacity: 0.3 !important;
+  pointer-events: none !important;
 }

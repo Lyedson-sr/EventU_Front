@@ -1,80 +1,20 @@
 import { useState, useRef } from "react";
+import Field from "./Field";
 import "./newEventU.css";
 import { FaRegCalendarAlt, FaRegClock } from "react-icons/fa";
-
-// --- DEFINIÇÃO DO CAMPO (MOVIDO PARA FORA PARA CORRIGIR O FOCO) ---
-const Field = ({
-    label,
-    placeholder,
-    type = "text",
-    value,
-    onChange,
-    onBlur,
-    error,
-    errorMsg,
-    large = false,
-    icon = null,
-    children = null,
-    inputRef = null, 
-    handleIconClick = null, 
-  }) => {
-    return (
-        <div className={`field-n ${large ? "large-n" : ""}`}>
-            <label>{label}</label>
-            
-            {/* Estrutura para Data/Hora com ícone */}
-            {type === "date-icon" || type === "time-icon" ? (
-                <div className="input-with-icon-n">
-                    <input
-                        ref={inputRef} 
-                        type={type === "date-icon" ? "date" : "time"} 
-                        value={value}
-                        onChange={onChange}
-                        onBlur={onBlur}
-                        placeholder={placeholder}
-                        className={error ? "input-error-n" : ""}
-                    />
-                    <span className="icon-n" onClick={handleIconClick}> 
-                        {icon}
-                    </span>
-                </div>
-            ) : type === "select" ? (
-                <select value={value} onChange={onChange} className={error ? "input-error-n" : ""}>
-                    {children}
-                </select>
-            ) : type === "textarea" ? (
-                <textarea // Este é o componente usado pela Descrição
-                    placeholder={placeholder}
-                    value={value}
-                    onChange={onChange}
-                    onBlur={onBlur}
-                    className={error ? "input-error-n" : ""}
-                />
-            ) : (
-                <input
-                    type={type}
-                    placeholder={placeholder}
-                    value={value}
-                    onChange={onChange}
-                    onBlur={onBlur}
-                    className={error ? "input-error-n" : ""}
-                />
-            )}
-
-            {error && <span className="error-msg-n">{errorMsg}</span>}
-        </div>
-    );
-  };
-// -----------------------------------------------------------------
-
+import { createEvent } from "../../service/eventService";
 
 function NewEventUModal({ closeModal }) {
-  // Estados para os campos
   const [title, setTitle] = useState("");
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
   const [reminderTime, setReminderTime] = useState("");
-  const [description, setDescription] = useState(""); // Novo estado para descrição
+  const [description, setDescription] = useState("");
+  const [color, setColor] = useState("");
+  const [location, setLocation] = useState("");
+  const [typeEvent, setTypeEvent] = useState("");
+  const [recurrence, setRecurrence] = useState("");
+  const [convidados, setConvidados] = useState("")
   
   const [touched, setTouched] = useState({
     title: false,
@@ -83,17 +23,14 @@ function NewEventUModal({ closeModal }) {
     reminderTime: false,
   });
 
-  // Refs para inputs de Data e Hora
   const dateInputRef = useRef(null); 
   const timeInputRef = useRef(null); 
 
-  // Funções de validação básica (mantidas)
   const isTitleValid = title.trim() !== "";
   const isDateValid = date !== "";
   const isTimeValid = time !== "";
   const isReminderValid = reminderTime !== ""; 
 
-  // Handlers para abrir o seletor nativo
   const handleDateIconClick = () => {
     if (dateInputRef.current && dateInputRef.current.showPicker) {
         dateInputRef.current.showPicker();
@@ -110,13 +47,12 @@ function NewEventUModal({ closeModal }) {
     }
   };
 
-
   const showTitleError = touched.title && !isTitleValid;
   const showDateError = touched.date && !isDateValid;
   const showTimeError = touched.time && !isTimeValid;
   const showReminderError = touched.reminderTime && !isReminderValid;
 
-  const handleCreate = () => {
+  async function handleCreate(){
     setTouched({ 
         title: true, 
         date: true, 
@@ -124,14 +60,25 @@ function NewEventUModal({ closeModal }) {
         reminderTime: true 
     });
 
-    if (isTitleValid && isDateValid && isTimeValid && isTimeValid && isReminderValid) {
-      alert("Evento Criado com sucesso! (Simulação)");
-      closeModal();
+    if (isTitleValid && isDateValid && isTimeValid && isReminderValid) {
+      const start_datetime = `${date}T${time}:00-03:00`;
+
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      const convidadosList = convidados
+        .split(",")
+        .map(email => email.trim())
+        .filter(email => emailRegex.test(email));      
+      
+      const response = await createEvent(title, description, location, typeEvent, start_datetime, start_datetime, recurrence, null, color, convidadosList);
+      
+      console.log(response)
+      if(response.ok){
+        window.location.reload();
+      }
     } else {
       console.log("Preencha os campos obrigatórios.");
     }
   };
-
   return (
     <div className="modal-overlay-n">
       <div className="modal-container-n">
@@ -158,7 +105,6 @@ function NewEventUModal({ closeModal }) {
             type="textarea"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            // 'large' foi removido daqui para que fique lado a lado
           />
           
           {/* Data */}
@@ -192,20 +138,33 @@ function NewEventUModal({ closeModal }) {
           />
 
           {/* Tipo */}
-          <Field label="Tipo" type="select">
-            <option>Pessoal</option>
-            <option>Trabalho</option>
-            <option>Outro</option>
+          <Field 
+            label="Tipo" 
+            type="select"
+            value={typeEvent}
+            onChange={(e) => setTypeEvent(e.target.value)}
+          >
+            <option value="">Selecione...</option>
+            <option value="Pessoal">Pessoal</option>
+            <option value="Group">Grupo</option>
           </Field>
 
+
           {/* Local */}
-          <Field label="Local" placeholder="Local do evento" />
+          <Field 
+            label="Local" 
+            placeholder="Local do evento" 
+            value={location} 
+            onChange={(e) => setLocation(e.target.value)}
+          />
 
           {/* Convidados (Ocupa as duas colunas) */}
           <Field
             label="Convidados"
             placeholder="Emails separados por vírgula"
             large
+            value={convidados}
+            onChange={(e) => setConvidados(e.target.value)}
           />
           
           {/* Lembrete */}
@@ -219,24 +178,27 @@ function NewEventUModal({ closeModal }) {
             errorMsg="Lembrete é obrigatório."
           />
 
-          {/* Recorrência */}
-          <Field label="Recorrência" type="select">
-            <option>Não se repete</option>
-            <option>Diariamente</option>
-            <option>Semanalmente</option>
-            <option>Mensalmente</option>
-            <option>Anualmente</option>
+          {/* Recorrência recurrence, setRecurrence */}
+          <Field label="Recorrência" type="select" value={recurrence} onChange={(e) => setRecurrence(e.target.value)}>
+            <option value="Não se repete">Não se repete</option>
+            <option value="Diariamente">Diariamente</option>
+            <option value="Semanalmente">Semanalmente</option>
+            <option value="Mensalmente">Mensalmente</option>
+            <option value="Anualmente">Anualmente</option>
           </Field>
 
           {/* Cor do evento (Ocupa as duas colunas) */}
           <div className="field-n color-field-n large-n"> 
             <label>Cor do evento</label>
             <div className="color-picker-n">
-              <span className="color-n red-n" />
-              <span className="color-n gray-n" />
-              <span className="color-n blue-n" />
-              <span className="color-n green-n" />
-              <button className="add-color-btn-n">+</button>
+              <button className="color-n red-n"   onClick={() => setColor("#e63946")}/>
+              <button className="color-n gray-n"  onClick={() => setColor("#d9d9d9")}/>
+              <button className="color-n blue-n"  onClick={() => setColor("#74b3ff")}/>
+              <button className="color-n green-n" onClick={() => setColor("#2a9d8f")}/>
+              <button className="add-color-btn-n">
+                +
+                <input type="color" className="color-picker" onChange={(e) => setColor(e.target.value)}/>
+              </button>
             </div>
           </div>
           
