@@ -6,7 +6,7 @@ import { createEvent } from "../../service/eventService";
 
 function NewEventUModal({ closeModal }) {
   const [title, setTitle] = useState("");
-  const [date, setDate] = useState("");
+  const [dateStart, setDateStart] = useState("");
   const [time, setTime] = useState("");
   const [reminderTime, setReminderTime] = useState("");
   const [description, setDescription] = useState("");
@@ -14,33 +14,45 @@ function NewEventUModal({ closeModal }) {
   const [location, setLocation] = useState("");
   const [typeEvent, setTypeEvent] = useState("");
   const [recurrence, setRecurrence] = useState("");
-  const [convidados, setConvidados] = useState("")
-  
+  const [convidados, setConvidados] = useState("");
+  const [dateEnd, setDateEnd] = useState(""); // Estado do fim
+
   const [touched, setTouched] = useState({
     title: false,
-    date: false,
+    dateStart: false,
     time: false,
     reminderTime: false,
+    dateEnd: false, // Adicionado validação visual para data fim se quiser
   });
 
-  const dateInputRef = useRef(null); 
+  // --- CORREÇÃO AQUI: Criar Refs separados ---
+  const dateStartInputRef = useRef(null); 
+  const dateEndInputRef = useRef(null);   
   const timeInputRef = useRef(null); 
 
   const isTitleValid = title.trim() !== "";
-  const isDateValid = date !== "";
+  const isDateValid = dateStart !== "";
   const isTimeValid = time !== "";
   const isReminderValid = reminderTime !== ""; 
 
-  const handleDateIconClick = () => {
-    if (dateInputRef.current && dateInputRef.current.showPicker) {
-        dateInputRef.current.showPicker();
-    } else if (dateInputRef.current) {
-        dateInputRef.current.focus();
+  const handleDateStartIconClick = () => {
+    if (dateStartInputRef.current?.showPicker) {
+        dateStartInputRef.current.showPicker();
+    } else if (dateStartInputRef.current) {
+        dateStartInputRef.current.focus();
+    }
+  };
+
+  const handleDateEndIconClick = () => {
+    if (dateEndInputRef.current?.showPicker) {
+        dateEndInputRef.current.showPicker();
+    } else if (dateEndInputRef.current) {
+        dateEndInputRef.current.focus();
     }
   };
 
   const handleTimeIconClick = () => {
-    if (timeInputRef.current && timeInputRef.current.showPicker) {
+    if (timeInputRef.current?.showPicker) {
         timeInputRef.current.showPicker();
     } else if (timeInputRef.current) {
         timeInputRef.current.focus();
@@ -48,20 +60,23 @@ function NewEventUModal({ closeModal }) {
   };
 
   const showTitleError = touched.title && !isTitleValid;
-  const showDateError = touched.date && !isDateValid;
+  const showDateError = touched.dateStart && !isDateValid;
   const showTimeError = touched.time && !isTimeValid;
   const showReminderError = touched.reminderTime && !isReminderValid;
 
   async function handleCreate(){
     setTouched({ 
         title: true, 
-        date: true, 
+        dateStart: true, 
         time: true,
-        reminderTime: true 
+        reminderTime: true,
+        dateEnd: true 
     });
 
     if (isTitleValid && isDateValid && isTimeValid && isReminderValid) {
-      const start_datetime = `${date}T${time}:00-03:00`;
+      const start_datetime = `${dateStart}T${time}:00-03:00`;
+      
+      const end_datetime = `${dateEnd}T${time}:00-03:00`; 
 
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       const convidadosList = convidados
@@ -69,7 +84,8 @@ function NewEventUModal({ closeModal }) {
         .map(email => email.trim())
         .filter(email => emailRegex.test(email));      
       
-      const response = await createEvent(title, description, location, typeEvent, start_datetime, start_datetime, recurrence, null, color, convidadosList);
+      // Aqui eu passei end_datetime no segundo argumento de data
+      const response = await createEvent(title, description, location, typeEvent, start_datetime, end_datetime, recurrence, null, color, convidadosList);
       
       console.log(response)
       if(response.ok){
@@ -79,6 +95,7 @@ function NewEventUModal({ closeModal }) {
       console.log("Preencha os campos obrigatórios.");
     }
   };
+
   return (
     <div className="modal-overlay-n">
       <div className="modal-container-n">
@@ -87,7 +104,7 @@ function NewEventUModal({ closeModal }) {
         <h2 className="modal-title-n">Novo EventU</h2>
 
         <div className="modal-grid-n">
-          {/* Título (Coluna 1) */}
+          {/* Título */}
           <Field
             label="Título"
             placeholder="Digite o título"
@@ -98,7 +115,7 @@ function NewEventUModal({ closeModal }) {
             errorMsg="Título é obrigatório."
           />
 
-          {/* Descrição (Coluna 2) - **REMOVIDO 'large'** para ficar ao lado do Título */}
+          {/* Descrição */}
           <Field
             label="Descrição"
             placeholder="Descrição do evento"
@@ -107,19 +124,19 @@ function NewEventUModal({ closeModal }) {
             onChange={(e) => setDescription(e.target.value)}
           />
           
-          {/* Data */}
+          {/* Data Inicio */}
           <Field
-            label="Data"
+            label="Data de início"
             placeholder="dd/mm/aaaa"
             type="date-icon"
-            value={date}
-            onChange={(e) => setDate(e.target.value)}
-            onBlur={() => setTouched((t) => ({ ...t, date: true }))}
+            value={dateStart}
+            onChange={(e) => setDateStart(e.target.value)}
+            onBlur={() => setTouched((t) => ({ ...t, dateStart: true }))}
             error={showDateError}
             errorMsg="Data é obrigatória."
             icon={<FaRegCalendarAlt />} 
-            inputRef={dateInputRef} 
-            handleIconClick={handleDateIconClick} 
+            inputRef={dateStartInputRef} // REFERÊNCIA CORRETA
+            handleIconClick={handleDateStartIconClick} // HANDLER CORRETO
           />
 
           {/* Hora */}
@@ -137,7 +154,22 @@ function NewEventUModal({ closeModal }) {
             handleIconClick={handleTimeIconClick} 
           />
 
-          {/* Tipo */}
+          {/* Data do fim */}
+          <Field
+            label="Data do fim"
+            placeholder="dd/mm/aaaa"
+            type="date-icon"
+            value={dateEnd}
+            onChange={(e)=>setDateEnd(e.target.value)}
+            onBlur={() => setTouched((t) => ({...t, dateEnd: true}))}
+            error={null}
+            errorMsg="Data do fim é obrigatória"
+            icon={<FaRegCalendarAlt />} 
+            inputRef={dateEndInputRef} // REFERÊNCIA CORRETA
+            handleIconClick={handleDateEndIconClick} // HANDLER CORRETO
+          />
+
+          {/* ... Restante do código (Tipo, Local, etc) permanece igual ... */}
           <Field 
             label="Tipo" 
             type="select"
@@ -149,8 +181,6 @@ function NewEventUModal({ closeModal }) {
             <option value="Group">Grupo</option>
           </Field>
 
-
-          {/* Local */}
           <Field 
             label="Local" 
             placeholder="Local do evento" 
@@ -158,7 +188,14 @@ function NewEventUModal({ closeModal }) {
             onChange={(e) => setLocation(e.target.value)}
           />
 
-          {/* Convidados (Ocupa as duas colunas) */}
+          <Field label="Recorrência" type="select" value={recurrence} onChange={(e) => setRecurrence(e.target.value)}>
+            <option value="Não se repete">Não se repete</option>
+            <option value="Diariamente">Diariamente</option>
+            <option value="Semanalmente">Semanalmente</option>
+            <option value="Mensalmente">Mensalmente</option>
+            <option value="Anualmente">Anualmente</option>
+          </Field>
+
           <Field
             label="Convidados"
             placeholder="Emails separados por vírgula"
@@ -167,7 +204,6 @@ function NewEventUModal({ closeModal }) {
             onChange={(e) => setConvidados(e.target.value)}
           />
           
-          {/* Lembrete */}
           <Field
             label="Lembrete"
             placeholder="Ex: 10 minutos antes"
@@ -178,17 +214,7 @@ function NewEventUModal({ closeModal }) {
             errorMsg="Lembrete é obrigatório."
           />
 
-          {/* Recorrência recurrence, setRecurrence */}
-          <Field label="Recorrência" type="select" value={recurrence} onChange={(e) => setRecurrence(e.target.value)}>
-            <option value="Não se repete">Não se repete</option>
-            <option value="Diariamente">Diariamente</option>
-            <option value="Semanalmente">Semanalmente</option>
-            <option value="Mensalmente">Mensalmente</option>
-            <option value="Anualmente">Anualmente</option>
-          </Field>
-
-          {/* Cor do evento (Ocupa as duas colunas) */}
-          <div className="field-n color-field-n large-n"> 
+          <div className="field-n color-field-n"> 
             <label>Cor do evento</label>
             <div className="color-picker-n">
               <button className="color-n red-n"   onClick={() => setColor("#e63946")}/>
