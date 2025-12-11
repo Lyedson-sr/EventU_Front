@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef} from "react";
 import Field from "./Field";
 import "./newEventU.css";
 import { FaRegCalendarAlt, FaRegClock } from "react-icons/fa";
@@ -16,6 +16,7 @@ function NewEventUModal({ closeModal }) {
   const [recurrence, setRecurrence] = useState("");
   const [convidados, setConvidados] = useState("");
   const [dateEnd, setDateEnd] = useState(""); // Estado do fim
+  const user = JSON.parse(localStorage.getItem('user'));
 
   const [touched, setTouched] = useState({
     title: false,
@@ -25,7 +26,6 @@ function NewEventUModal({ closeModal }) {
     dateEnd: false, // Adicionado validação visual para data fim se quiser
   });
 
-  // --- CORREÇÃO AQUI: Criar Refs separados ---
   const dateStartInputRef = useRef(null); 
   const dateEndInputRef = useRef(null);   
   const timeInputRef = useRef(null); 
@@ -95,6 +95,10 @@ function NewEventUModal({ closeModal }) {
       console.log("Preencha os campos obrigatórios.");
     }
   };
+
+  
+  
+
 
   return (
     <div className="modal-overlay-n">
@@ -179,6 +183,9 @@ function NewEventUModal({ closeModal }) {
             <option value="">Selecione...</option>
             <option value="Pessoal">Pessoal</option>
             <option value="Group">Grupo</option>
+            {user && user.role === "admin" && (
+              <option value="institutional">Institucional</option>
+            )}
           </Field>
 
           <Field 

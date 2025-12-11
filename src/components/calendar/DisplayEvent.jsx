@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import Field from "./Field";
+import Swal from "sweetalert2";
 import { FaRegCalendarAlt, FaRegClock } from "react-icons/fa";
 import { deleteEvent, editEvent } from "../../service/eventService";
 
@@ -18,6 +19,7 @@ function DisplayEvent({ closeModal, event }) {
   const [typeEvent, setTypeEvent] = useState("");
   const [recurrence, setRecurrence] = useState("");
   const [convidados, setConvidados] = useState("");
+  const user = JSON.parse(localStorage.getItem('user'));
 
   // --- REFS SEPARADOS ---
   const dateStartInputRef = useRef(null);
@@ -38,6 +40,15 @@ function DisplayEvent({ closeModal, event }) {
   };
 
   async function deletedEvent (){
+    if(typeEvent == "institutional" && user.role != "admin"){
+      Swal.fire({
+        icon: "error",
+        title: "EvetU institucional não pode ser excluido!",
+        text: "Entre em contato com o administrador",
+      });
+      return
+    }
+
     const response = await deleteEvent(event.id);
     if(response.ok){
         console.log("Deletado!!")
@@ -47,6 +58,16 @@ function DisplayEvent({ closeModal, event }) {
   }
   
   async function handleEditEvent () {
+    if(typeEvent == "institutional" && user.role != "admin"){
+      Swal.fire({
+        icon: "error",
+        title: "EvetU institucional não pode ser editado!",
+        text: "Entre em contato com o administrador",
+      });
+      return
+    }
+
+
     if (!isEditing) {
         setIsEditing(true); 
     } else {
@@ -82,8 +103,11 @@ function DisplayEvent({ closeModal, event }) {
     setDescription(event.description || "");
     setLocation(event.location || "");
     
+    console.log(event.event_type)
     if(event.event_type === "personal"){
         setTypeEvent('personal');
+    }else if(event.event_type ==="institutional"){
+        setTypeEvent("institutional")
     }
     
     console.log(event.recurrence_rrule)
@@ -190,6 +214,9 @@ function DisplayEvent({ closeModal, event }) {
           >
             <option value="Pessoal">Pessoal</option>
             <option value="Group">Grupo</option>
+            {event && event.event_type === "institutional" &&(
+              <option value="institutional">Institucional</option>
+            )}
           </Field>
 
           <Field
