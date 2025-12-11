@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import Field from "./Field";
+import Swal from "sweetalert2";
 import { FaRegCalendarAlt, FaRegClock } from "react-icons/fa";
 import { deleteEvent, editEvent } from "../../service/eventService";
 
@@ -8,7 +9,8 @@ function DisplayEvent({ closeModal, event }) {
   const [isEditing, setIsEditing] = useState(false);
 
   const [title, setTitle] = useState("");
-  const [date, setDate] = useState("");
+  const [dateStart, setDateStart] = useState(""); // Renomeado para dateStart para clareza
+  const [dateEnd, setDateEnd] = useState("");     // Novo estado para Data Fim
   const [time, setTime] = useState("");
   const [reminderTime, setReminderTime] = useState("");
   const [description, setDescription] = useState("");
@@ -17,12 +19,20 @@ function DisplayEvent({ closeModal, event }) {
   const [typeEvent, setTypeEvent] = useState("");
   const [recurrence, setRecurrence] = useState("");
   const [convidados, setConvidados] = useState("");
+  const user = JSON.parse(localStorage.getItem('user'));
 
-  const dateInputRef = useRef(null);
+  // --- REFS SEPARADOS ---
+  const dateStartInputRef = useRef(null);
+  const dateEndInputRef = useRef(null);
   const timeInputRef = useRef(null);
 
-  const handleDateIconClick = () => {
-    if (isEditing) dateInputRef.current?.showPicker?.();
+  // --- HANDLERS SEPARADOS ---
+  const handleDateStartIconClick = () => {
+    if (isEditing) dateStartInputRef.current?.showPicker?.();
+  };
+
+  const handleDateEndIconClick = () => {
+    if (isEditing) dateEndInputRef.current?.showPicker?.();
   };
 
   const handleTimeIconClick = () => {
@@ -30,20 +40,36 @@ function DisplayEvent({ closeModal, event }) {
   };
 
   async function deletedEvent (){
+    if(typeEvent == "institutional" && user.role != "admin"){
+      Swal.fire({
+        icon: "error",
+        title: "EvetU institucional não pode ser excluido!",
+        text: "Entre em contato com o administrador",
+      });
+      return
+    }
+
     const response = await deleteEvent(event.id);
     if(response.ok){
         console.log("Deletado!!")
     }
     closeModal()
     window.location.reload();
-
   }
   
   async function handleEditEvent () {
-    
+    if(typeEvent == "institutional" && user.role != "admin"){
+      Swal.fire({
+        icon: "error",
+        title: "EvetU institucional não pode ser editado!",
+        text: "Entre em contato com o administrador",
+      });
+      return
+    }
+
 
     if (!isEditing) {
-        setIsEditing(true);  // habilita os campos
+        setIsEditing(true); 
     } else {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         const convidadosList = convidados
@@ -51,49 +77,66 @@ function DisplayEvent({ closeModal, event }) {
             .map(email => email.trim())
             .filter(email => emailRegex.test(email));      
 
+        // --- Monta as datas completas (Start e End) ---
+        const start_datetime = `${dateStart}T${time}:00-03:00`;
+        
+        const end_datetime = `${dateEnd}T${time}:00-03:00`; 
 
-        const response = await editEvent(event.id ,title, description, location, typeEvent, date, time, recurrence, null, color, convidadosList)
+        // Atualizei a chamada para passar start_datetime e end_datetime
+        // Verifique se seu service 'editEvent' aceita esses parâmetros nessa ordem
+        const response = await editEvent(event.id, title, description, location, typeEvent, start_datetime, end_datetime, recurrence, null, color, convidadosList)
+        
         if(response.ok){
             setIsEditing(false);
             closeModal()
             window.location.reload();
-        
         }
         
         setIsEditing(false);
     }
   }
+
   useEffect(() => {
     if (!event) return;
-
 
     setTitle(event.title || "");
     setDescription(event.description || "");
     setLocation(event.location || "");
     
-    if(event.event_type == "personal"){
+    console.log(event.event_type)
+    if(event.event_type === "personal"){
         setTypeEvent('personal');
+    }else if(event.event_type ==="institutional"){
+        setTypeEvent("institutional")
     }
     
-    
-    
-    const rruleMap = {
-        "RRULE:FREQ=DAILY": "Diariamente",
-        "RRULE:FREQ=WEEKLY": "Semanalmente",
-        "RRULE:FREQ=MONTHLY": "Mensalmente",
-        "RRULE:FREQ=YEARLY": "Anualmente"
-    }; 
-    setRecurrence(rruleMap[event.recurrence_rrule] || "");
+    console.log(event.recurrence_rrule)
+    if (event.recurrence_rrule.includes("RRULE:FREQ=DAILY")) {
+    setRecurrence("Diariamente");
+    } else if (event.recurrence_rrule.includes("RRULE:FREQ=WEEKLY")) {
+        setRecurrence("Semanalmente");
+    } else if (event.recurrence_rrule.includes("RRULE:FREQ=MONTHLY")) {
+        setRecurrence("Mensalmente");
+    } else if (event.recurrence_rrule.includes("RRULE:FREQ=YEARLY")) {
+        setRecurrence("Anualmente");
+    } else {
+        setRecurrence("Não se repete");
+    }
+
+    // Procura por "UNTIL=" seguido de números, T e Z
+    const match = (event.recurrence_rrule || "").match(/UNTIL=(\d{4})(\d{2})(\d{2})/);
+    if (match) {
+      setDateEnd(`${match[1]}-${match[2]}-${match[3]}`);
+    }
+
     setColor(event.backgroundColor || event.color || "");
-
+    
+    // --- Lógica para Data Inicio ---
     if (event.start_datetime) {
-      const iso = event.start_datetime; 
-
-      // remove o timezone (-03:00)
-      const clean = iso.replace(/([-+]\d{2}:\d{2})$/, "");
-
-      setDate(clean.substring(0, 10));        // "2026-02-02"
-      setTime(clean.substring(11, 16));       // "21:00"
+      const isoStart = event.start_datetime; 
+      const cleanStart = isoStart.replace(/([-+]\d{2}:\d{2})$/, ""); // remove timezone
+      setDateStart(cleanStart.substring(0, 10));        
+      setTime(cleanStart.substring(11, 16));       
     }
 
     setReminderTime(event.reminderTime || "");
@@ -126,17 +169,19 @@ function DisplayEvent({ closeModal, event }) {
             onChange={(e) => setDescription(e.target.value)}
           />
 
+          {/* Data Início */}
           <Field
-            label="Data"
+            label="Data Início"
             type="date-icon"
-            value={date}
+            value={dateStart}
             disabled={!isEditing}
-            onChange={(e) => setDate(e.target.value)}
+            onChange={(e) => setDateStart(e.target.value)}
             icon={<FaRegCalendarAlt />}
-            inputRef={dateInputRef}
-            handleIconClick={handleDateIconClick}
+            inputRef={dateStartInputRef}      // Ref Específico
+            handleIconClick={handleDateStartIconClick} // Handler Específico
           />
 
+          {/* Hora */}
           <Field
             label="Hora"
             type="time-icon"
@@ -148,6 +193,18 @@ function DisplayEvent({ closeModal, event }) {
             handleIconClick={handleTimeIconClick}
           />
 
+           {/* Data Fim (NOVO) */}
+           <Field
+            label="Data Fim"
+            type="date-icon"
+            value={dateEnd}
+            disabled={!isEditing}
+            onChange={(e) => setDateEnd(e.target.value)}
+            icon={<FaRegCalendarAlt />}
+            inputRef={dateEndInputRef}        // Ref Específico
+            handleIconClick={handleDateEndIconClick} // Handler Específico
+          />
+
           <Field 
             label="Tipo" 
             type="select"
@@ -157,6 +214,9 @@ function DisplayEvent({ closeModal, event }) {
           >
             <option value="Pessoal">Pessoal</option>
             <option value="Group">Grupo</option>
+            {event && event.event_type === "institutional" &&(
+              <option value="institutional">Institucional</option>
+            )}
           </Field>
 
           <Field
@@ -165,6 +225,20 @@ function DisplayEvent({ closeModal, event }) {
             value={location}
             onChange={(e) => setLocation(e.target.value)}
           />
+
+          <Field 
+            label="Recorrência" 
+            type="select" 
+            disabled={!isEditing}
+            value={recurrence}
+            onChange={(e) => {setRecurrence(e.target.value)}}
+          >
+            <option value="Não se repete">Não se repete</option>
+            <option value="Diariamente">Diariamente</option>
+            <option value="Semanalmente">Semanalmente</option>
+            <option value="Mensalmente">Mensalmente</option>
+            <option value="Anualmente">Anualmente</option>
+          </Field>
 
           <Field
             label="Convidados"
@@ -182,22 +256,8 @@ function DisplayEvent({ closeModal, event }) {
             onChange={(e) => setReminderTime(e.target.value)}
           />
 
-          <Field 
-            label="Recorrência" 
-            type="select" 
-            disabled={!isEditing}
-            value={recurrence}
-            onChange={(e) => {setRecurrence(e.target.value)}}
-          >
-            <option value="Não se repete">Não se repete</option>
-            <option value="Diariamente">Diariamente</option>
-            <option value="Semanalmente">Semanalmente</option>
-            <option value="Mensalmente">Mensalmente</option>
-            <option value="Anualmente">Anualmente</option>
-          </Field>
-
           {/* COR DO EVENTO */}
-          <div className="field-n color-field-n large-n">
+          <div className="field-n color-field-n">
             <label>Cor do evento</label>
 
             <div className={`color-picker-n ${!isEditing ? "disabled-n" : ""}`}>
@@ -215,8 +275,6 @@ function DisplayEvent({ closeModal, event }) {
         </div>
 
         <div className="modal-footer-n">
-
-          {/* EXCLUIR */}
           <button 
             className="cancel-btn-n"
             onClick={deletedEvent}
@@ -224,7 +282,6 @@ function DisplayEvent({ closeModal, event }) {
             Excluir
           </button>
 
-          {/* EDITAR */}
           <button 
             className="create-btn-n"
             onClick={handleEditEvent}

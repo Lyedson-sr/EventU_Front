@@ -9,15 +9,31 @@ export async function createEvent(title, description, location, event_type, star
         event_type = "personal"
     }
 
+    const date = new Date(end_datetime);
+
+    const pad = n => String(n).padStart(2, '0');
+
+    const formatted =
+    date.getUTCFullYear() +
+    pad(date.getUTCMonth() + 1) +
+    pad(date.getUTCDate()) + "T" +
+    pad(date.getUTCHours()) +
+    pad(date.getUTCMinutes()) +
+    pad(date.getUTCSeconds()) + "Z";
+
+    console.log(formatted);
+
+
     const rruleMap = {
         "Não se repete": null, 
-        "Diariamente": "RRULE:FREQ=DAILY",
-        "Semanalmente": "RRULE:FREQ=WEEKLY",
-        "Mensalmente": "RRULE:FREQ=MONTHLY",
-        "Anualmente": "RRULE:FREQ=YEARLY"
+        "Diariamente": "RRULE:FREQ=DAILY;UNTIL="+formatted,
+        "Semanalmente": "RRULE:FREQ=WEEKLY;UNTIL="+formatted,
+        "Mensalmente": "RRULE:FREQ=MONTHLY;UNTIL="+formatted,
+        "Anualmente": "RRULE:FREQ=YEARLY;UNTIL="+formatted
     }; 
-    const response = await createEventRequest(group, title, description, location, event_type, start_datetime, end_datetime,rruleMap[recurrence_rrule], recurrence_exceptions, color, convidados)
+    const response = await createEventRequest(group, title, description, location, event_type, start_datetime, start_datetime,rruleMap[recurrence_rrule], recurrence_exceptions, color, convidados)
     
+    console.log(response)
     if(response.ok){
         return {ok:true}
     }
@@ -46,7 +62,7 @@ export async function deleteEvent(id){
     }
 }
 
-export async function editEvent(id, title, description, location, event_type, date, time, recurrence_rrule, recurrence_exceptions, color, convidados){
+export async function editEvent(id, title, description, location, event_type, start_datetime, end_datetime, recurrence_rrule, recurrence_exceptions, color, convidados){
     let group = null
     if(event_type != "Pessoal"){
         //Criar a logica depois 
@@ -55,17 +71,31 @@ export async function editEvent(id, title, description, location, event_type, da
         event_type = "personal"
     }
 
-    const start_datetime = `${date}T${time}:00-03:00`;
-    const end_datetime = start_datetime;
+    
+    
+
+    const dateEdit = new Date(end_datetime);
+
+    const pad = n => String(n).padStart(2, '0');
+
+    const formatted =
+    dateEdit.getUTCFullYear() +
+    pad(dateEdit.getUTCMonth() + 1) +
+    pad(dateEdit.getUTCDate()) + "T" +
+    pad(dateEdit.getUTCHours()) +
+    pad(dateEdit.getUTCMinutes()) +
+    pad(dateEdit.getUTCSeconds()) + "Z";
+
+    console.log(formatted);
 
     const rruleMap = {
         "Não se repete": null, 
-        "Diariamente": "RRULE:FREQ=DAILY",
-        "Semanalmente": "RRULE:FREQ=WEEKLY",
-        "Mensalmente": "RRULE:FREQ=MONTHLY",
-        "Anualmente": "RRULE:FREQ=YEARLY"
+        "Diariamente": "RRULE:FREQ=DAILY;UNTIL="+formatted,
+        "Semanalmente": "RRULE:FREQ=WEEKLY;UNTIL="+formatted,
+        "Mensalmente": "RRULE:FREQ=MONTHLY;UNTIL="+formatted,
+        "Anualmente": "RRULE:FREQ=YEARLY;UNTIL="+formatted
     }; 
-    const response = await editEventRequest(id, title, description, location, event_type, start_datetime, end_datetime, rruleMap[recurrence_rrule], recurrence_exceptions, color, convidados)
+    const response = await editEventRequest(id, title, description, location, event_type, start_datetime, start_datetime, rruleMap[recurrence_rrule], recurrence_exceptions, color, convidados)
 
     if(response.ok){
         return {ok:true}
