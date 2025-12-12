@@ -11,7 +11,7 @@ function LoginBox() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const [userType, setUserType] = useState("");
+  const [userType, setUserType] = useState("student");
   const [showPassword, setShowPassword] = useState(false);
 
   const [loading, setLoading] = useState(false); 
@@ -87,13 +87,13 @@ function LoginBox() {
         </Link>
 
         <div className="roles">
-          <input className="radio" type="radio" name="tipoUsuario" value="student" id="aluno" onChange={(e) => setUserType(e.target.value)} />
+          <input className="radio" type="radio" name="tipoUsuario" value="student" id="aluno" onChange={(e) => setUserType(e.target.value)} checked={userType === "student"} />
           <label htmlFor="aluno" className="type-user">Aluno</label>
 
-          <input className="radio" type="radio" name="tipoUsuario" value="professor" id="professor" onChange={(e) => setUserType(e.target.value)} />
+          <input className="radio" type="radio" name="tipoUsuario" value="professor" id="professor" onChange={(e) => setUserType(e.target.value)} checked={userType === "professor"} />
           <label htmlFor="professor" className="type-user">Professor</label>
 
-          <input className="radio" type="radio" name="tipoUsuario" value="admin" id="admin" onChange={(e) => setUserType(e.target.value)}/>
+          <input className="radio" type="radio" name="tipoUsuario" value="admin" id="admin" onChange={(e) => setUserType(e.target.value)} checked={userType === "admin"} />
           <label htmlFor="admin" className="type-user">Admin</label>
         </div>
 
