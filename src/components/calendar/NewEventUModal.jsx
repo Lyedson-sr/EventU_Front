@@ -3,6 +3,7 @@ import Field from "./Field";
 import "./newEventU.css";
 import { FaRegCalendarAlt, FaRegClock } from "react-icons/fa";
 import { createEvent } from "../../service/eventService";
+import Swal from "sweetalert2";
 
 function NewEventUModal({ closeModal }) {
   const [title, setTitle] = useState("");
@@ -23,7 +24,8 @@ function NewEventUModal({ closeModal }) {
     dateStart: false,
     time: false,
     reminderTime: false,
-    dateEnd: false, // Adicionado validação visual para data fim se quiser
+    dateEnd: false, 
+    typeEvent: false
   });
 
   const dateStartInputRef = useRef(null); 
@@ -34,6 +36,7 @@ function NewEventUModal({ closeModal }) {
   const isDateValid = dateStart !== "";
   const isTimeValid = time !== "";
   const isReminderValid = reminderTime !== ""; 
+  const isTypeEventValid = typeEvent !== "";
 
   const handleDateStartIconClick = () => {
     if (dateStartInputRef.current?.showPicker) {
@@ -63,6 +66,7 @@ function NewEventUModal({ closeModal }) {
   const showDateError = touched.dateStart && !isDateValid;
   const showTimeError = touched.time && !isTimeValid;
   const showReminderError = touched.reminderTime && !isReminderValid;
+  const showTypeError = touched.typeEvent && !isTypeEventValid;
 
   async function handleCreate(){
     setTouched({ 
@@ -70,13 +74,46 @@ function NewEventUModal({ closeModal }) {
         dateStart: true, 
         time: true,
         reminderTime: true,
-        dateEnd: true 
+        dateEnd: true,
+        typeEvent: true
     });
 
-    if (isTitleValid && isDateValid && isTimeValid && isReminderValid) {
+    if (isTitleValid && isDateValid && isTimeValid && isReminderValid && isTypeEventValid) {
+
       const start_datetime = `${dateStart}T${time}:00-03:00`;
-      
       const end_datetime = `${dateEnd}T${time}:00-03:00`; 
+      
+      const diffDias = (new Date(dateEnd) - new Date(dateStart)) / (1000 * 60 * 60 * 24);
+
+      if(diffDias < 0){
+        Swal.fire({
+                icon: "error",
+                title: "Datas invalidas!",
+                text: "Por favor, digite data de inicio e fim validas.",
+              });
+        return
+      }else if(diffDias <= 7 && recurrence == "Semanalmente"){
+        Swal.fire({
+                icon: "error",
+                title: "Datas invalidas!",
+                text: "Eventos semanais devem durar mais de 7 dias",
+              });
+        return
+      }else if(diffDias <= 31 && recurrence == "Mensalmente"){
+        Swal.fire({
+                icon: "error",
+                title: "Datas invalidas!",
+                text: "Eventos mensais devem durar mais de 31 dias",
+              });
+        return
+      }else if(diffDias <= 365 && recurrence == "Anualmente"){
+        Swal.fire({
+                icon: "error",
+                title: "Datas invalidas!",
+                text: "Eventos anuais devem durar mais de 365 dias",
+              });
+        return
+      }
 
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       const convidadosList = convidados
@@ -84,10 +121,8 @@ function NewEventUModal({ closeModal }) {
         .map(email => email.trim())
         .filter(email => emailRegex.test(email));      
       
-      // Aqui eu passei end_datetime no segundo argumento de data
       const response = await createEvent(title, description, location, typeEvent, start_datetime, end_datetime, recurrence, null, color, convidadosList);
       
-      console.log(response)
       if(response.ok){
         window.location.reload();
       }
@@ -165,9 +200,6 @@ function NewEventUModal({ closeModal }) {
             type="date-icon"
             value={dateEnd}
             onChange={(e)=>setDateEnd(e.target.value)}
-            onBlur={() => setTouched((t) => ({...t, dateEnd: true}))}
-            error={null}
-            errorMsg="Data do fim é obrigatória"
             icon={<FaRegCalendarAlt />} 
             inputRef={dateEndInputRef} // REFERÊNCIA CORRETA
             handleIconClick={handleDateEndIconClick} // HANDLER CORRETO
@@ -179,6 +211,9 @@ function NewEventUModal({ closeModal }) {
             type="select"
             value={typeEvent}
             onChange={(e) => setTypeEvent(e.target.value)}
+            onBlur={() => setTouched((t) => ({ ...t, typeEvent: true }))} 
+            error={showTypeError}
+            errorMsg="Tipo do evento é obrigatório"
           >
             <option value="">Selecione...</option>
             <option value="Pessoal">Pessoal</option>
@@ -187,6 +222,7 @@ function NewEventUModal({ closeModal }) {
               <option value="institutional">Institucional</option>
             )}
           </Field>
+
 
           <Field 
             label="Local" 

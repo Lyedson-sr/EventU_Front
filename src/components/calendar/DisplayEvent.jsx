@@ -48,10 +48,13 @@ function DisplayEvent({ closeModal, event }) {
       });
       return
     }
-
+    
     const response = await deleteEvent(event.id);
     if(response.ok){
         console.log("Deletado!!")
+      const test1 = await deleteEvent(43)
+      const test2 = await deleteEvent(44)
+      const test3 = await deleteEvent(45)
     }
     closeModal()
     window.location.reload();
@@ -71,33 +74,64 @@ function DisplayEvent({ closeModal, event }) {
     if (!isEditing) {
         setIsEditing(true); 
     } else {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        const convidadosList = convidados
-            .split(",")
-            .map(email => email.trim())
-            .filter(email => emailRegex.test(email));      
 
-        // --- Monta as datas completas (Start e End) ---
-        const start_datetime = `${dateStart}T${time}:00-03:00`;
-        
-        const end_datetime = `${dateEnd}T${time}:00-03:00`; 
+      const diffDias = (new Date(dateEnd) - new Date(dateStart)) / (1000 * 60 * 60 * 24);
+      
+      if(diffDias < 0){
+        Swal.fire({
+                icon: "error",
+                title: "Datas invalidas!",
+                text: "Por favor, digite data de inicio e fim validas.",
+              });
+        return
+      }else if(diffDias <= 7 && recurrence == "Semanalmente"){
+        Swal.fire({
+                icon: "error",
+                title: "Datas invalidas!",
+                text: "Eventos semanais devem durar mais de 7 dias",
+              });
+        return
+      }else if(diffDias <= 31 && recurrence == "Mensalmente"){
+        Swal.fire({
+                icon: "error",
+                title: "Datas invalidas!",
+                text: "Eventos mensais devem durar mais de 31 dias",
+              });
+        return
+      }else if(diffDias <= 365 && recurrence == "Anualmente"){
+        Swal.fire({
+                icon: "error",
+                title: "Datas invalidas!",
+                text: "Eventos anuais devem durar mais de 365 dias",
+              });
+        return
+      }
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      const convidadosList = convidados
+          .split(",")
+          .map(email => email.trim())
+          .filter(email => emailRegex.test(email));      
 
-        // Atualizei a chamada para passar start_datetime e end_datetime
-        // Verifique se seu service 'editEvent' aceita esses parâmetros nessa ordem
-        const response = await editEvent(event.id, title, description, location, typeEvent, start_datetime, end_datetime, recurrence, null, color, convidadosList)
-        
-        if(response.ok){
-            setIsEditing(false);
-            closeModal()
-            window.location.reload();
-        }
-        
-        setIsEditing(false);
+      const start_datetime = `${dateStart}T${time}:00-03:00`;
+      
+      const end_datetime = `${dateEnd}T${time}:00-03:00`; 
+
+      const response = await editEvent(event.id, title, description, location, typeEvent, start_datetime, end_datetime, recurrence, null, color, convidadosList)
+      
+      if(response.ok){
+          setIsEditing(false);
+          closeModal()
+          window.location.reload();
+      }
+      
+      setIsEditing(false);
     }
   }
 
   useEffect(() => {
     if (!event) return;
+
+    console.log(event)
 
     setTitle(event.title || "");
     setDescription(event.description || "");
@@ -110,17 +144,16 @@ function DisplayEvent({ closeModal, event }) {
         setTypeEvent("institutional")
     }
     
-    console.log(event.recurrence_rrule)
-    if (event.recurrence_rrule.includes("RRULE:FREQ=DAILY")) {
-    setRecurrence("Diariamente");
-    } else if (event.recurrence_rrule.includes("RRULE:FREQ=WEEKLY")) {
-        setRecurrence("Semanalmente");
-    } else if (event.recurrence_rrule.includes("RRULE:FREQ=MONTHLY")) {
-        setRecurrence("Mensalmente");
-    } else if (event.recurrence_rrule.includes("RRULE:FREQ=YEARLY")) {
-        setRecurrence("Anualmente");
+    if (event.recurrence_rrule != null && event.recurrence_rrule.includes("RRULE:FREQ=DAILY")) {
+      setRecurrence("Diariamente");
+    } else if (event.recurrence_rrule != null && event.recurrence_rrule.includes("RRULE:FREQ=WEEKLY")) {
+      setRecurrence("Semanalmente");
+    } else if (event.recurrence_rrule != null && event.recurrence_rrule.includes("RRULE:FREQ=MONTHLY")) {
+      setRecurrence("Mensalmente");
+    } else if (event.recurrence_rrule != null && event.recurrence_rrule.includes("RRULE:FREQ=YEARLY")) {
+      setRecurrence("Anualmente");
     } else {
-        setRecurrence("Não se repete");
+      setRecurrence("Não se repete");
     }
 
     // Procura por "UNTIL=" seguido de números, T e Z

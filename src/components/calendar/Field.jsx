@@ -45,6 +45,7 @@ const Field = ({
                 <select
                     value={value}
                     onChange={onChange}
+                    onBlur={onBlur}
                     disabled={disabled}             // ⬅️ SELECT desativado
                     className={error ? "input-error-n" : ""}
                 >
