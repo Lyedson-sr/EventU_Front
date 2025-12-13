@@ -5,7 +5,7 @@ import { FaRegCalendarAlt, FaRegClock } from "react-icons/fa";
 import { createEvent } from "../../service/eventService";
 import Swal from "sweetalert2";
 
-function NewEventUModal({ closeModal }) {
+function NewEventUModal({ closeModal, grupos }) {
   const [title, setTitle] = useState("");
   const [dateStart, setDateStart] = useState("");
   const [time, setTime] = useState("");
@@ -72,70 +72,78 @@ function NewEventUModal({ closeModal }) {
   const showDateEndError = touched.dateEnd && !isDateEndValid;
 
 
-  async function handleCreate(){
-    setTouched({ 
-        title: true, 
-        dateStart: true, 
-        time: true,
-        reminderTime: true,
-        dateEnd: true,
-        typeEvent: true
+  async function handleCreate() {
+    console.log("aeutw")
+    setTouched({
+      title: true,
+      dateStart: true,
+      dateEnd: true,
+      time: true,
+      reminderTime: true,
+      typeEvent: true,
     });
 
-    if (isTitleValid && isDateValid && isTimeValid && isReminderValid && isTypeEventValid && isDateEndValid) {
-
-      const start_datetime = `${dateStart}T${time}:00-03:00`;
-      const end_datetime = `${dateEnd}T${time}:00-03:00`; 
-      
-      const diffDias = (new Date(dateEnd) - new Date(dateStart)) / (1000 * 60 * 60 * 24);
-
-      if(diffDias < 0){
-        Swal.fire({
-                icon: "error",
-                title: "Datas invalidas!",
-                text: "Por favor, digite data de inicio e fim validas.",
-              });
-        return
-      }else if(diffDias <= 7 && recurrence == "Semanalmente"){
-        Swal.fire({
-                icon: "error",
-                title: "Datas invalidas!",
-                text: "Eventos semanais devem durar mais de 7 dias",
-              });
-        return
-      }else if(diffDias <= 31 && recurrence == "Mensalmente"){
-        Swal.fire({
-                icon: "error",
-                title: "Datas invalidas!",
-                text: "Eventos mensais devem durar mais de 31 dias",
-              });
-        return
-      }else if(diffDias <= 365 && recurrence == "Anualmente"){
-        Swal.fire({
-                icon: "error",
-                title: "Datas invalidas!",
-                text: "Eventos anuais devem durar mais de 365 dias",
-              });
-        return
-      }
-
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      const convidadosList = convidados
-        .split(",")
-        .map(email => email.trim())
-        .filter(email => emailRegex.test(email));      
-      
-      const response = await createEvent(title, description, location, typeEvent, start_datetime, end_datetime, recurrence, null, color, convidadosList);
-      
-      if(response.ok){
-        window.location.reload();
-      }
-    } else {
-      console.log("Preencha os campos obrigatórios.");
+    if (
+      !isTitleValid ||
+      !isDateValid ||
+      !isDateEndValid ||
+      !isTimeValid ||
+      !isReminderValid ||
+      !isTypeEventValid
+    ) {
+      return;
     }
-  };
 
-  
+    const start_datetime = `${dateStart}T${time}:00-03:00`;
+    const end_datetime = `${dateEnd}T${time}:00-03:00`;
+
+    const diffDias =
+      (new Date(dateEnd) - new Date(dateStart)) /
+      (1000 * 60 * 60 * 24);
+
+    if (diffDias < 0) {
+      Swal.fire("Erro", "Data final não pode ser menor que a inicial", "error");
+      return;
+    }
+
+    if (recurrence === "Semanalmente" && diffDias <= 7) {
+      Swal.fire("Erro", "Eventos semanais devem durar mais de 7 dias", "error");
+      return;
+    }
+
+    if (recurrence === "Mensalmente" && diffDias <= 31) {
+      Swal.fire("Erro", "Eventos mensais devem durar mais de 31 dias", "error");
+      return;
+    }
+
+    if (recurrence === "Anualmente" && diffDias <= 365) {
+      Swal.fire("Erro", "Eventos anuais devem durar mais de 365 dias", "error");
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const convidadosList = convidados
+      .split(",")
+      .map((e) => e.trim())
+      .filter((e) => emailRegex.test(e));
+
+    // 👉 COR FINAL DO EVENTO (SEM setState)
+    let eventColor = color;
+
+    if (typeEvent !== "Pessoal") {
+      const grupoSelecionado = grupos?.grupos?.find(
+        (g) => String(g.id) === typeEvent
+      );
+      eventColor = grupoSelecionado?.color || "#999";
+    }
+
+    const response = await createEvent(title, description, location, typeEvent, start_datetime, end_datetime, recurrence, null, eventColor, convidadosList);
+
+    if (response?.ok) {
+      window.location.reload();
+    }
+  }
+
   
 
 
@@ -223,12 +231,23 @@ function NewEventUModal({ closeModal }) {
             errorMsg="Tipo do evento é obrigatório"
           >
             <option value="">Selecione...</option>
+
             <option value="Pessoal">Pessoal</option>
-            <option value="Group">Grupo</option>
-            {user && user.role === "admin" && (
+
+            {Array.isArray(grupos?.grupos) && // Tente acessar "grupos.grupos"
+              grupos.grupos.map((grupo) => ( // Altere aqui também
+                <option key={grupo.id} value={String(grupo.id)}>
+                  {grupo.name}
+                </option>
+              ))
+            }
+
+            {user?.role === "admin" && (
               <option value="institutional">Institucional</option>
             )}
           </Field>
+
+
 
 
           <Field 
@@ -264,19 +283,23 @@ function NewEventUModal({ closeModal }) {
             errorMsg="Lembrete é obrigatório."
           />
 
-          <div className="field-n color-field-n"> 
-            <label>Cor do evento</label>
-            <div className="color-picker-n">
-              <button className="color-n red-n"   onClick={() => setColor("#e63946")}/>
-              <button className="color-n gray-n"  onClick={() => setColor("#d9d9d9")}/>
-              <button className="color-n blue-n"  onClick={() => setColor("#74b3ff")}/>
-              <button className="color-n green-n" onClick={() => setColor("#2a9d8f")}/>
-              <button className="add-color-btn-n">
-                +
-                <input type="color" className="color-picker" onChange={(e) => setColor(e.target.value)}/>
-              </button>
-            </div>
-          </div>
+            {
+              typeEvent == "Pessoal" && (
+                  <div className="field-n color-field-n"> 
+                  <label>Cor do evento</label>
+                  <div className="color-picker-n">
+                    <button className="color-n red-n"   onClick={() => setColor("#e63946")}/>
+                    <button className="color-n gray-n"  onClick={() => setColor("#d9d9d9")}/>
+                    <button className="color-n blue-n"  onClick={() => setColor("#74b3ff")}/>
+                    <button className="color-n green-n" onClick={() => setColor("#2a9d8f")}/>
+                    <button className="add-color-btn-n">
+                      +
+                      <input type="color" className="color-picker" onChange={(e) => setColor(e.target.value)}/>
+                    </button>
+                  </div>
+                </div>
+              ) 
+            }
           
         </div>
 

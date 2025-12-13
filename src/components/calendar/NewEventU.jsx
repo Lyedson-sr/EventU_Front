@@ -2,7 +2,7 @@ import { useState } from "react";
 import NewEventUModal from "./NewEventUModal";
 import "./newEventU.css";
 
-function NewEventU() {
+function NewEventU(grupos) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -11,7 +11,7 @@ function NewEventU() {
         Novo EventU
       </button>
 
-      {open && <NewEventUModal closeModal={() => setOpen(false)} />}
+      {open && <NewEventUModal grupos={grupos} closeModal={() => setOpen(false)} />}
     </div>
   );
 }

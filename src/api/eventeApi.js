@@ -1,6 +1,7 @@
 import { httpClient, httpClientAuth } from "./httpClient";
 
 export function createEventRequest(group, title, description, location, event_type, start_datetime, end_datetime, recurrence_rrule, recurrence_exceptions, color, guest_emails){
+    console.log(event_type)
     return httpClientAuth("/events/",{
         method: "POST",
         body: JSON.stringify({

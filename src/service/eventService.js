@@ -2,12 +2,14 @@ import { createEventRequest, getAllEventsRequest, deleteEventRequest, editEventR
 
 export async function createEvent(title, description, location, event_type, start_datetime, end_datetime, recurrence_rrule, recurrence_exceptions, color, convidados) {
     let group = null
-    if(event_type != "Pessoal"){
-        //Criar a logica depois 
-        group = null
-    }else{
+    if(event_type == "Pessoal"){
         event_type = "personal"
+    }else{
+        group = event_type
+        event_type = "group"
     }
+
+    console.log(event_type)
 
     const date = new Date(end_datetime);
 
@@ -64,11 +66,12 @@ export async function deleteEvent(id){
 
 export async function editEvent(id, title, description, location, event_type, start_datetime, end_datetime, recurrence_rrule, recurrence_exceptions, color, convidados){
     let group = null
-    if(event_type != "Pessoal"){
-        //Criar a logica depois 
-        group = null
-    }else{
+    
+    if(event_type == "Pessoal"){
         event_type = "personal"
+    }else{
+        group = event_type
+        event_type = "group"
     }
 
     
@@ -95,6 +98,7 @@ export async function editEvent(id, title, description, location, event_type, st
         "Mensalmente": "RRULE:FREQ=MONTHLY;UNTIL="+formatted,
         "Anualmente": "RRULE:FREQ=YEARLY;UNTIL="+formatted
     }; 
+    console.log(description)
     const response = await editEventRequest(id, title, description, location, event_type, start_datetime, start_datetime, rruleMap[recurrence_rrule], recurrence_exceptions, color, convidados)
 
     if(response.ok){

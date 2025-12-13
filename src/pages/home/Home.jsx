@@ -15,28 +15,15 @@ import { deleteGroup, getGroup } from "../../service/groupService.js";
 function Home() {
     const [openPanel, setOpenPanel] = useState(false);
 
-    const [eventos, setEventos] = useState([]);
     const [grupos, setGrupos] = useState([]); // Estado central para os grupos
 
     useEffect(() => {
-        loadEvents();
         loadGroups(); 
     }, []);
-
-    async function loadEvents() {
-        try {
-            const resp = await getAllEvents();
-            setEventos(resp.results || []);
-        } catch (error) {
-            console.error("Erro ao carregar eventos:", error);
-            setEventos([]); 
-        }
-    }
 
     async function loadGroups() {
         try {
             const grupos = await getGroup()
-            console.log("Aqui", grupos.results)
             setGrupos(grupos.results);
         } catch (error) {
             console.error("Erro ao carregar grupos (simulação falhou):", error);
@@ -59,34 +46,15 @@ function Home() {
             };
 
             setGrupos(prevGrupos => [...prevGrupos, novoGrupoFinal]);
-            console.log("Grupo Criado:", novoGrupoFinal);
             window.location.reload();           
         } catch (error) {
             console.error("Erro ao criar grupo:", error);
         }
     }
     
-    // 2. ✏️ EDITAR GRUPO (PATCH /api/v1/groups/{id})
-    async function handleEditGroup(groupId, updatedData) {
-        try {
-            // ** CHAMADA REAL À API: Ex: await updateGroup(groupId, updatedData); **
-            
-            // Atualiza o estado: Mapeia e substitui o grupo
-            setGrupos(prevGrupos => prevGrupos.map(group => 
-                group.id === groupId 
-                    ? { ...group, ...updatedData } 
-                    : group
-            ));
-            console.log(`Grupo ID ${groupId} editado com sucesso.`, updatedData);
-            
-        } catch (error) {
-            console.error("Erro ao editar grupo:", error);
-        }
-    }
-
+    
 
     async function handleDeleteGroup(groupId) {
-        console.log(groupId)
         const response = await deleteGroup(groupId)
         if(response.ok){
             window.location.reload();
@@ -102,7 +70,7 @@ function Home() {
                 </div>
 
                 <div className="button-novo-eventu">
-                    <NewEventU />
+                    <NewEventU grupos={grupos} />
                 </div>
                 {/*
                 <div className="mini-calendario">
@@ -113,7 +81,6 @@ function Home() {
                 <MyGroupsSection 
                     groups={grupos} 
                     onGroupCreated={handleAddGroup} 
-                    onGroupEdited={handleEditGroup} 
                     onGroupDeleted={handleDeleteGroup} 
                 />  
 
@@ -127,7 +94,7 @@ function Home() {
                     onClick={() => setOpenPanel(true)}
                 />
 
-                <CalendarEventU events={eventos} />
+                <CalendarEventU grupos={grupos} />
 
                 {openPanel && <UserPanel onClose={() => setOpenPanel(false)} />}
             </div>

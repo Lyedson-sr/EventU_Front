@@ -4,7 +4,7 @@ import Swal from "sweetalert2";
 import { FaRegCalendarAlt, FaRegClock } from "react-icons/fa";
 import { deleteEvent, editEvent } from "../../service/eventService";
 
-function DisplayEvent({ closeModal, event }) {
+function DisplayEvent({ closeModal, event , grupo}) {
 
   const [isEditing, setIsEditing] = useState(false);
 
@@ -21,12 +21,10 @@ function DisplayEvent({ closeModal, event }) {
   const [convidados, setConvidados] = useState("");
   const user = JSON.parse(localStorage.getItem('user'));
 
-  // --- REFS SEPARADOS ---
   const dateStartInputRef = useRef(null);
   const dateEndInputRef = useRef(null);
   const timeInputRef = useRef(null);
 
-  // --- HANDLERS SEPARADOS ---
   const handleDateStartIconClick = () => {
     if (isEditing) dateStartInputRef.current?.showPicker?.();
   };
@@ -111,14 +109,15 @@ function DisplayEvent({ closeModal, event }) {
 
       const start_datetime = `${dateStart}T${time}:00-03:00`;
       
-      const end_datetime = `${dateEnd}T${time}:00-03:00`; 
+      const end_datetime = `${dateEnd}T${time}:00-03:00`;
+      console.log(typeEvent) 
 
       const response = await editEvent(event.id, title, description, location, typeEvent, start_datetime, end_datetime, recurrence, null, color, convidadosList)
       
       if(response.ok){
           setIsEditing(false);
-          closeModal()
-          window.location.reload();
+          //closeModal()
+          //window.location.reload();
       }
       
       setIsEditing(false);
@@ -127,14 +126,12 @@ function DisplayEvent({ closeModal, event }) {
 
   useEffect(() => {
     if (!event) return;
-
-    console.log(event)
+    console.log(event.event_type)
 
     setTitle(event.title || "");
     setDescription(event.description || "");
     setLocation(event.location || "");
     
-    console.log(event.event_type)
     if(event.event_type === "personal"){
         setTypeEvent('personal');
     }else if(event.event_type ==="institutional"){
@@ -242,16 +239,23 @@ function DisplayEvent({ closeModal, event }) {
             value={typeEvent}
             onChange={(e) => setTypeEvent(e.target.value)}
           >
-            <option value="Pessoal">Pessoal</option>
-            <option value="Group">Grupo</option>
-            {/* 1. SE ADMIN: Sempre mostra 'Institucional' para permitir a edição */}
+            
+            {event.event_type != "group" && (
+              <option value="Pessoal">Pessoal</option>
+            )}
+
             {user && user.role === "admin" && (
               <option value="institutional">Institucional</option>
             )}
-            {/* 2. SE NÃO ADMIN E O EVENTO É INSTITUCIONAL: Mostra a opção, mas ela não pode ser alterada. */}
+
             {!(user && user.role === "admin") && event && event.event_type === "institutional" && (
               <option value="institutional" disabled={true}>Institucional</option>
             )}
+
+            {grupo && event.event_type === "group" && (
+                <option value={grupo.id} disabled={false}>{grupo.name}</option>
+              )
+            }
           </Field>
 
           <Field

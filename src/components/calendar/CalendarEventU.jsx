@@ -9,7 +9,7 @@ import "./calendarEventu.css"
 import DisplayEvent from "./DisplayEvent";
 import { getAllEvents, getOccurrences } from "../../service/eventService";
 
-export default function CalendarEventU({ events }) {
+export default function CalendarEventU({grupos}) {
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [mapEventos, setMapEventos] = useState([]);
   let eventosFormatados = null
@@ -26,13 +26,14 @@ export default function CalendarEventU({ events }) {
     const carregarDetalhes = async () => {
       try {
         const allEvents = await getAllEvents();
+        console.log(allEvents)
         setMapEventos(allEvents); 
-        console.log("Detalhes carregados:", allEvents);
       } catch (error) {
         console.error("Erro ao carregar detalhes", error);
       }
     };
     carregarDetalhes();
+
   }, []);
 
   const fetchEvents = async (fetchInfo, successCallback, failureCallback) => {
@@ -65,6 +66,7 @@ export default function CalendarEventU({ events }) {
         }
       }));
 
+      console.log(eventosFormatados);
       successCallback(eventosFormatados);
     }catch (error) {
       failureCallback(error);
@@ -73,9 +75,19 @@ export default function CalendarEventU({ events }) {
 
   const getEventForModal = () => {
     if (!selectedEvent || mapEventos.length == 0) return null;
-    console.log(mapEventos[selectedEvent.id])
     return mapEventos[selectedEvent.id];
   };
+
+  const getGrupoDoEvento = () => {
+    const evento = getEventForModal();
+    if (!evento || !grupos) return null;
+
+
+    const grupoTemp= grupos.find(g => g.id === evento.group)
+    return grupoTemp;
+  };
+
+
   return (
     <div className="calendar-wrapper">
       <div style={{ padding: "20px" }}>
@@ -135,6 +147,7 @@ export default function CalendarEventU({ events }) {
           closeModal={() => setSelectedEvent(null)}
           onEdit={(updatedData) => suaFuncaoDeEditar(updatedData)}
           onDelete={(ev) => suaFuncaoDeExcluir(ev)}
+          grupo={getGrupoDoEvento()}
         />
       )}
       </div>
