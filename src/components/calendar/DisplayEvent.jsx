@@ -52,9 +52,6 @@ function DisplayEvent({ closeModal, event }) {
     const response = await deleteEvent(event.id);
     if(response.ok){
         console.log("Deletado!!")
-      const test1 = await deleteEvent(43)
-      const test2 = await deleteEvent(44)
-      const test3 = await deleteEvent(45)
     }
     closeModal()
     window.location.reload();

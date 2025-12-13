@@ -16,7 +16,7 @@ function NewEventUModal({ closeModal }) {
   const [typeEvent, setTypeEvent] = useState("");
   const [recurrence, setRecurrence] = useState("");
   const [convidados, setConvidados] = useState("");
-  const [dateEnd, setDateEnd] = useState(""); // Estado do fim
+  const [dateEnd, setDateEnd] = useState("");
   const user = JSON.parse(localStorage.getItem('user'));
 
   const [touched, setTouched] = useState({
@@ -37,6 +37,8 @@ function NewEventUModal({ closeModal }) {
   const isTimeValid = time !== "";
   const isReminderValid = reminderTime !== ""; 
   const isTypeEventValid = typeEvent !== "";
+  const isDateEndValid = dateEnd !== ""; 
+
 
   const handleDateStartIconClick = () => {
     if (dateStartInputRef.current?.showPicker) {
@@ -67,6 +69,8 @@ function NewEventUModal({ closeModal }) {
   const showTimeError = touched.time && !isTimeValid;
   const showReminderError = touched.reminderTime && !isReminderValid;
   const showTypeError = touched.typeEvent && !isTypeEventValid;
+  const showDateEndError = touched.dateEnd && !isDateEndValid;
+
 
   async function handleCreate(){
     setTouched({ 
@@ -78,7 +82,7 @@ function NewEventUModal({ closeModal }) {
         typeEvent: true
     });
 
-    if (isTitleValid && isDateValid && isTimeValid && isReminderValid && isTypeEventValid) {
+    if (isTitleValid && isDateValid && isTimeValid && isReminderValid && isTypeEventValid && isDateEndValid) {
 
       const start_datetime = `${dateStart}T${time}:00-03:00`;
       const end_datetime = `${dateEnd}T${time}:00-03:00`; 
@@ -172,7 +176,7 @@ function NewEventUModal({ closeModal }) {
             onChange={(e) => setDateStart(e.target.value)}
             onBlur={() => setTouched((t) => ({ ...t, dateStart: true }))}
             error={showDateError}
-            errorMsg="Data é obrigatória."
+            errorMsg="Data do início é obrigatória."
             icon={<FaRegCalendarAlt />} 
             inputRef={dateStartInputRef} // REFERÊNCIA CORRETA
             handleIconClick={handleDateStartIconClick} // HANDLER CORRETO
@@ -199,10 +203,13 @@ function NewEventUModal({ closeModal }) {
             placeholder="dd/mm/aaaa"
             type="date-icon"
             value={dateEnd}
-            onChange={(e)=>setDateEnd(e.target.value)}
+            onChange={(e) => setDateEnd(e.target.value)}
+            onBlur={() => setTouched((t) => ({ ...t, dateEnd: true }))} // Marca o campo como tocado
+            error={showDateEndError} // Exibe o erro
+            errorMsg="Data do fim é obrigatória." // Mensagem de erro
             icon={<FaRegCalendarAlt />} 
-            inputRef={dateEndInputRef} // REFERÊNCIA CORRETA
-            handleIconClick={handleDateEndIconClick} // HANDLER CORRETO
+            inputRef={dateEndInputRef} 
+            handleIconClick={handleDateEndIconClick} 
           />
 
           {/* ... Restante do código (Tipo, Local, etc) permanece igual ... */}
