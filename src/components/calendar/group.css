@@ -1,0 +1,28 @@
+.groups-container{
+    width: 80%;
+}
+
+.group-item{
+    display: flex;
+    justify-content: space-between; 
+    align-items: center; 
+    padding: 5px 10px; 
+    border-radius: 5px;
+    margin: 5px 0;
+    background-color: '#fff'; 
+    border: 1px solid #eee; 
+}
+
+.item{
+    display: flex;
+    align-items: center;
+    flex-grow: 1;
+}
+
+.text{
+    width: 15px;
+    height: 15px;
+    border-radius: 4px;
+    margin-right: 10px;
+
+}

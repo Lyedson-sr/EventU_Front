@@ -9,6 +9,7 @@ import avatar from "../../assets/Avatar.svg";
 import { useState, useEffect } from "react";
 import { getAllEvents } from "../../service/eventService.js";
 import MyGroupsSection from "../../components/calendar/MyGroupsSection.jsx";
+import { deleteGroup, getGroup } from "../../service/groupService.js";
 
 
 function Home() {
@@ -38,18 +39,15 @@ function Home() {
     async function loadGroups() {
         try {
             // DADOS SIMULADOS INICIAIS, adaptados para o formato que suporta cor e membros
-            setGrupos([
-                { id: 1, name: "Grupo de Trabalho A", color: '#00D1B2', description: "Trabalhos e estudos.", members: ["a@mail.com"] },
-                { id: 2, name: "Fim de Semana Futebol", color: '#EE1515', description: "Jogos de sábado.", members: ["b@mail.com", "c@mail.com"] },
-                { id: 3, name: "Reunião Diretoria", color: '#4A90E2', description: "Reuniões administrativas.", members: ["d@mail.com"] },
-            ]);
+            const grupos = await getGroup()
+            console.log("Aqui", grupos.results)
+            setGrupos(grupos.results);
         } catch (error) {
             console.error("Erro ao carregar grupos (simulação falhou):", error);
             setGrupos([]);
         }
     }
 
-    // 1. ➕ CRIAR GRUPO (POST /api/v1/groups/)
     async function handleAddGroup(newGroupData) {
         try {
             // ** CHAMADA REAL À API: Ex: const response = await createGroup(newGroupData); **
@@ -66,7 +64,7 @@ function Home() {
 
             setGrupos(prevGrupos => [...prevGrupos, novoGrupoFinal]);
             console.log("Grupo Criado:", novoGrupoFinal);
-            
+            window.location.reload();           
         } catch (error) {
             console.error("Erro ao criar grupo:", error);
         }
@@ -93,15 +91,12 @@ function Home() {
 
     // 3. ❌ EXCLUIR GRUPO (DELETE /api/v1/groups/{id})
     async function handleDeleteGroup(groupId) {
-        try {
-            // ** CHAMADA REAL À API: Ex: await deleteGroup(groupId); **
-
-            // Atualiza o estado: Remove o grupo com o ID fornecido
-            setGrupos(prevGrupos => prevGrupos.filter(g => g.id !== groupId));
-            console.log(`Grupo ID ${groupId} excluído.`);
-        } catch (error) {
-            console.error("Erro ao excluir grupo:", error);
-        }
+        console.log(groupId)
+            const response = await deleteGroup(groupId)
+            if(response.ok){
+                window.location.reload();
+            }
+        
     }
 
     return (
