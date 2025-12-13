@@ -245,13 +245,13 @@ function DisplayEvent({ closeModal, event }) {
             <option value="Pessoal">Pessoal</option>
             <option value="Group">Grupo</option>
             {/* 1. SE ADMIN: Sempre mostra 'Institucional' para permitir a edição */}
-            {user && user.role === "admin" && (
-              <option value="institutional">Institucional</option>
-            )}
-            {/* 2. SE NÃO ADMIN E O EVENTO É INSTITUCIONAL: Mostra a opção, mas ela não pode ser alterada. */}
-            {!(user && user.role === "admin") && event && event.event_type === "institutional" && (
-              <option value="institutional" disabled={true}>Institucional</option>
-            )}
+            {user && user.role === "admin" && (
+              <option value="institutional">Institucional</option>
+            )}
+            {/* 2. SE NÃO ADMIN E O EVENTO É INSTITUCIONAL: Mostra a opção, mas ela não pode ser alterada. */}
+            {!(user && user.role === "admin") && event && event.event_type === "institutional" && (
+              <option value="institutional" disabled={true}>Institucional</option>
+            )}
           </Field>
 
           <Field

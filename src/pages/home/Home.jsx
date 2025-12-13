@@ -13,8 +13,6 @@ import { deleteGroup, getGroup } from "../../service/groupService.js";
 
 
 function Home() {
-
-    const { auth, setAuth } = useAuth();
     const [openPanel, setOpenPanel] = useState(false);
 
     const [eventos, setEventos] = useState([]);
@@ -35,10 +33,8 @@ function Home() {
         }
     }
 
-    // LISTAR GRUPOS (GET /api/v1/groups/)
     async function loadGroups() {
         try {
-            // DADOS SIMULADOS INICIAIS, adaptados para o formato que suporta cor e membros
             const grupos = await getGroup()
             console.log("Aqui", grupos.results)
             setGrupos(grupos.results);
@@ -89,14 +85,12 @@ function Home() {
     }
 
 
-    // 3. ❌ EXCLUIR GRUPO (DELETE /api/v1/groups/{id})
     async function handleDeleteGroup(groupId) {
         console.log(groupId)
-            const response = await deleteGroup(groupId)
-            if(response.ok){
-                window.location.reload();
-            }
-        
+        const response = await deleteGroup(groupId)
+        if(response.ok){
+            window.location.reload();
+        }   
     }
 
     return (
@@ -110,11 +104,11 @@ function Home() {
                 <div className="button-novo-eventu">
                     <NewEventU />
                 </div>
-
+                {/*
                 <div className="mini-calendario">
                     <MiniCalendar />
                 </div>
-
+                */}
                 {/* PASSA TODAS AS PROPS DE GRUPO PARA O MyGroupsSection */}
                 <MyGroupsSection 
                     groups={grupos} 

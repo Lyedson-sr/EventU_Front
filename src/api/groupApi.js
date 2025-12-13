@@ -25,3 +25,15 @@ export function deleteGroupRequest(id){
         method: "DELETE"
     });
 }
+
+export function editGroupRequest(id, name, description, color, members_emails){
+    return httpClientAuth(`/groups/${id}/`,{
+        method: "PATCH",
+        body: JSON.stringify({
+            name,
+            description, 
+            color, 
+            members_emails
+        })
+    });
+}

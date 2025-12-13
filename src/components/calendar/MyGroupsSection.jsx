@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import "./group.css"
 import NewGroupModal from "../calendar/NewGroupModal.jsx"; 
 import { FaPlus, FaChevronUp, FaChevronDown, FaTimes } from "react-icons/fa";
+import DisplayGroupSection from "./DisplayGroupSection.jsx";
 
 // Componente simples para renderizar cada grupo
 const GroupItem = ({ group, onDelete, onEdit }) => (
@@ -27,14 +28,13 @@ const GroupItem = ({ group, onDelete, onEdit }) => (
 );
 
 
-export default function MyGroupsSection({ groups, onGroupCreated, onGroupEdited, onGroupDeleted }) {
+export default function MyGroupsSection({ groups, onGroupEdited, onGroupDeleted }) {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isListOpen, setIsListOpen] = useState(true);
     const [groupToEdit, setGroupToEdit] = useState(null); // Estado para o grupo a ser editado
 
     // Fecha o modal e limpa o estado de edição
-    const closeModal = () => {
-        
+    const closeModal = () => { 
         setIsModalOpen(false);
         setGroupToEdit(null);
     };
@@ -47,7 +47,7 @@ export default function MyGroupsSection({ groups, onGroupCreated, onGroupEdited,
     
     // Abre o modal para edição
     const openEditModal = (group) => {
-        setGroupToEdit(group); // Define o grupo para preencher o formulário
+        setGroupToEdit(group); 
         setIsModalOpen(true);
     };
     
@@ -100,8 +100,14 @@ export default function MyGroupsSection({ groups, onGroupCreated, onGroupEdited,
             {isModalOpen && (
                 <NewGroupModal // Usando o nome NewGroupModal
                     closeModal={closeModal} 
-                    initialGroup={groupToEdit} // Passa o grupo (ou null para criação)
-                    onGroupCreated={onGroupCreated}
+                    initialGroup={groupToEdit}
+                />
+            )}
+
+            {groupToEdit && (
+                <DisplayGroupSection
+                    closeModal={closeModal} 
+                    initialGroup={groupToEdit}
                     onGroupEdited={onGroupEdited}
                 />
             )}
